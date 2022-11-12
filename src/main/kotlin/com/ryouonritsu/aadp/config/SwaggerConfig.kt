@@ -26,8 +26,8 @@ class SwaggerConfig {
         .build()
 
     fun apiInfo(): ApiInfo = ApiInfoBuilder()
-        .title("InkBook Api")
-        .description("InkBook backend api documentation")
+        .title("aadp Api")
+        .description("aadp backend api documentation")
         .termsOfServiceUrl("")
         .version("1.0")
         .build()
