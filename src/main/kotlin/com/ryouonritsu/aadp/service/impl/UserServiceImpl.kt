@@ -37,6 +37,7 @@ class UserServiceImpl(
     companion object {
         private val log = LoggerFactory.getLogger(UserServiceImpl::class.java)
     }
+
     private fun getHtml(url: String): Pair<Int, String?> {
         val client = OkHttpClient()
         val request = Request.Builder().get().url(url).build()
