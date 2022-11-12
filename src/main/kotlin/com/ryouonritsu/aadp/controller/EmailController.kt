@@ -23,7 +23,10 @@ class EmailController {
     }
 
     @RequestMapping("/registration_verification")
-    fun registrationVerification(@RequestParam("verification_code") email: String, model: Model): String {
+    fun registrationVerification(
+        @RequestParam("verification_code") email: String,
+        model: Model
+    ): String {
         model.addAttribute("verification_code", email)
         return "registration_verification"
     }
