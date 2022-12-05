@@ -24,6 +24,6 @@ data class UserDTO(
     var registrationTime: LocalDateTime = LocalDateTime.now(),
     @Schema(description = "real name", example = "real name", required = true)
     var realName: String = "",
-    @Schema(description = "institution id", example = "1", required = true)
+    @Schema(description = "institution id", example = "1")
     var institutionId: Long? = null
 )
