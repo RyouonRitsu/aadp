@@ -20,9 +20,9 @@ class Institution(
     var user: User
 ) {
     fun toDTO() = InstitutionDTO(
-        id = id,
+        id = "$id",
         institutionName = institutionName,
         institutionInfo = institutionInfo,
-        userId = user.id
+        userId = "${user.id}"
     )
 }
