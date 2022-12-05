@@ -15,6 +15,10 @@ class Response<T>(
     val data: T?
 ) {
     companion object {
+        fun <T> success(message: String): Response<T> {
+            return Response(true, message, null)
+        }
+
         fun <T> success(data: T): Response<T> {
             return Response(true, "success", data)
         }
