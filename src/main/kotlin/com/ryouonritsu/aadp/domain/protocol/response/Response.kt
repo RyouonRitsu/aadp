@@ -19,10 +19,6 @@ class Response<T>(
             return Response(true, message, null)
         }
 
-        fun <T> success(data: T): Response<T> {
-            return Response(true, "success", data)
-        }
-
         fun <T> success(message: String, data: T): Response<T> {
             return Response(true, message, data)
         }
