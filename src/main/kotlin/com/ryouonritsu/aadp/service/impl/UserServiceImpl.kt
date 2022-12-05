@@ -1,5 +1,6 @@
 package com.ryouonritsu.aadp.service.impl
 
+import com.ryouonritsu.aadp.domain.dto.UserDTO
 import com.ryouonritsu.aadp.domain.protocol.response.Response
 import com.ryouonritsu.aadp.entity.User
 import com.ryouonritsu.aadp.entity.UserFile
@@ -302,10 +303,10 @@ class UserServiceImpl(
         )
     }
 
-    override fun showInfo(token: String): Response<List<User>> {
+    override fun showInfo(token: String): Response<List<UserDTO>> {
         return runCatching {
             val user = userRepository.findById(TokenUtils.verify(token).second).get()
-            Response.success("获取成功", listOf(user))
+            Response.success("获取成功", listOf(user.toDTO()))
         }.onFailure {
             if (it is NoSuchElementException) {
                 redisUtils - "${TokenUtils.verify(token).second}"
