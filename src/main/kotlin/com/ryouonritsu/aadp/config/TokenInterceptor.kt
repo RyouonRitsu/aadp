@@ -36,9 +36,9 @@ class TokenInterceptor : HandlerInterceptor {
 //                log.info("通过拦截器")
 //                return true
 //            }
-            val (result, user_id) = TokenUtils.verify(token)
+            val (result, userId) = TokenUtils.verify(token)
             log.info("现有的token: $token")
-            if (redisUtils["$user_id"] == token && result) {
+            if (redisUtils["$userId"] == token && result) {
                 log.info("通过拦截器")
                 return true
             } else {
