@@ -1,5 +1,7 @@
 package com.ryouonritsu.aadp.service
 
+import com.ryouonritsu.aadp.domain.protocol.response.Response
+import com.ryouonritsu.aadp.entity.User
 import org.springframework.web.multipart.MultipartFile
 
 /**
@@ -18,7 +20,7 @@ interface UserService {
     ): Map<String, Any>
 
     fun login(username: String?, password: String?, keepLogin: Boolean): Map<String, Any>
-    fun showInfo(token: String): Map<String, Any>
+    fun showInfo(token: String): Response<List<User>>
     fun selectUserByUserId(userId: Long): Map<String, Any>
     fun sendForgotPasswordEmail(email: String?): Map<String, Any>
     fun changePassword(

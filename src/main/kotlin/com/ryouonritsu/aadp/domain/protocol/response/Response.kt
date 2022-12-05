@@ -23,7 +23,7 @@ class Response<T>(
             return Response(true, message, data)
         }
 
-        fun <T> error(message: String): Response<T> {
+        fun <T> failure(message: String): Response<T> {
             return Response(false, message, null)
         }
     }

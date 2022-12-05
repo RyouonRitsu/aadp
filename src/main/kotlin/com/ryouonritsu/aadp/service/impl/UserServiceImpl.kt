@@ -1,5 +1,6 @@
 package com.ryouonritsu.aadp.service.impl
 
+import com.ryouonritsu.aadp.domain.protocol.response.Response
 import com.ryouonritsu.aadp.entity.User
 import com.ryouonritsu.aadp.entity.UserFile
 import com.ryouonritsu.aadp.repository.UserFileRepository
@@ -301,28 +302,18 @@ class UserServiceImpl(
         )
     }
 
-    override fun showInfo(token: String): Map<String, Any> {
+    override fun showInfo(token: String): Response<List<User>> {
         return runCatching {
             val user = userRepository.findById(TokenUtils.verify(token).second).get()
-            mapOf(
-                "success" to true,
-                "message" to "获取成功",
-                "data" to listOf(user.toDict())
-            )
+            Response.success("获取成功", listOf(user))
         }.onFailure {
             if (it is NoSuchElementException) {
                 redisUtils - "${TokenUtils.verify(token).second}"
-                return mapOf(
-                    "success" to false,
-                    "message" to "数据库中没有此用户, 此会话已失效"
-                )
+                return Response.failure("数据库中没有此用户, 此会话已失效")
             }
             it.printStackTrace()
         }.getOrDefault(
-            mapOf(
-                "success" to false,
-                "message" to "获取失败, 发生意外错误"
-            )
+            Response.failure("获取失败, 发生意外错误")
         )
     }
 
