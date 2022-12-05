@@ -7,9 +7,9 @@ import io.swagger.v3.oas.annotations.media.Schema
  */
 @Schema(description = "Response")
 class Response<T>(
-    @Schema(name = "success", description = "Success状态", required = true)
+    @Schema(name = "success", description = "Success状态", example = "true", required = true)
     val success: Boolean,
-    @Schema(name = "message", description = "信息", required = true)
+    @Schema(name = "message", description = "信息", example = "Success", required = true)
     val message: String,
     @Schema(name = "data", description = "数据")
     val data: T?

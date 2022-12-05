@@ -1,5 +1,6 @@
 package com.ryouonritsu.aadp.controller
 
+import com.ryouonritsu.aadp.domain.protocol.response.Response
 import com.ryouonritsu.aadp.service.UserService
 import com.ryouonritsu.aadp.utils.RedisUtils
 import com.ryouonritsu.aadp.utils.TokenUtils
@@ -102,12 +103,9 @@ class UserController(
             description = "用户登陆后获取的token令牌",
             required = true
         ) token: String
-    ): Map<String, Any> {
+    ): Response<Any> {
         redisUtils - "${TokenUtils.verify(token).second}"
-        return mapOf(
-            "success" to true,
-            "message" to "登出成功"
-        )
+        return Response.success("登出成功")
     }
 
     @GetMapping("/showInfo")
