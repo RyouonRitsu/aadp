@@ -38,14 +38,14 @@ class User(
     )
 
     fun toDTO() = UserDTO(
-        id = id,
+        id = "$id",
         email = email,
         username = username,
         password = password,
-        credit = credit,
+        credit = "$credit",
         avatar = avatar,
         registrationTime = registrationTime,
         realName = realName,
-        institutionId = institution?.id
+        institutionId = "${institution?.id}"
     )
 }
