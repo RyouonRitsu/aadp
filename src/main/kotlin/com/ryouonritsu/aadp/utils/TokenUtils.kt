@@ -16,12 +16,12 @@ class TokenUtils {
     companion object {
         private val log: Logger = LoggerFactory.getLogger(TokenUtils::class.java)
         private const val EXPIRE_TIME = 10 * 60 * 60 * 1000
-        private const val TOKEN_SECRET = "inkBook_backend_secret"
+        private const val TOKEN_SECRET = "ritsu_backend_secret"
 
         fun sign(user: User): String {
             val expireAt = Date(System.currentTimeMillis() + EXPIRE_TIME)
             return JWT.create()
-                .withIssuer("inkBook_backend")
+                .withIssuer("ritsu_backend")
                 .withClaim("user_id", user.id)
                 .withExpiresAt(expireAt)
                 .sign(Algorithm.HMAC256(TOKEN_SECRET))
@@ -31,7 +31,7 @@ class TokenUtils {
             val userId: Long
             try {
                 val jwtVerifier =
-                    JWT.require(Algorithm.HMAC256(TOKEN_SECRET)).withIssuer("inkBook_backend")
+                    JWT.require(Algorithm.HMAC256(TOKEN_SECRET)).withIssuer("ritsu_backend")
                         .build()
                 val decodedJWT = jwtVerifier.verify(token)
                 log.info("认证通过")
