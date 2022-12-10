@@ -8,10 +8,10 @@ import javax.validation.constraints.NotNull
  */
 @Schema(description = "调整用户积分请求")
 data class AdjustmentCreditRequest(
-    @field: NotNull(message = "UserId is mandatory")
+    @field:NotNull(message = "UserId is mandatory")
     @Schema(description = "用户id", example = "1", required = true)
     val userId: Long?,
-    @field: NotNull(message = "Value is mandatory")
+    @field:NotNull(message = "Value is mandatory")
     @Schema(description = "调整值", example = "1", required = true)
     val value: Int?
 )
