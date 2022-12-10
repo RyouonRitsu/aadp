@@ -1,9 +1,11 @@
 package com.ryouonritsu.aadp.service.impl
 
 import com.ryouonritsu.aadp.domain.dto.UserDTO
+import com.ryouonritsu.aadp.domain.protocol.request.ModifyUserInfoRequest
 import com.ryouonritsu.aadp.domain.protocol.response.Response
 import com.ryouonritsu.aadp.entity.User
 import com.ryouonritsu.aadp.entity.UserFile
+import com.ryouonritsu.aadp.repository.InstitutionRepository
 import com.ryouonritsu.aadp.repository.UserFileRepository
 import com.ryouonritsu.aadp.repository.UserRepository
 import com.ryouonritsu.aadp.service.UserService
@@ -32,9 +34,10 @@ import kotlin.io.path.Path
  */
 @Service
 class UserServiceImpl(
+    private val redisUtils: RedisUtils,
     private val userRepository: UserRepository,
     private val userFileRepository: UserFileRepository,
-    private val redisUtils: RedisUtils
+    private val institutionRepository: InstitutionRepository
 ) : UserService {
     companion object {
         private val log = LoggerFactory.getLogger(UserServiceImpl::class.java)
@@ -369,32 +372,36 @@ class UserServiceImpl(
         }
     }
 
-    override fun modifyUserInfo(
-        token: String,
-        username: String?,
-        realName: String?,
-        avatar: String?
-    ): Response<Unit> {
+    override fun modifyUserInfo(request: ModifyUserInfoRequest): Response<Unit> {
         return runCatching {
-            val user = userRepository.findById(TokenUtils.verify(token).second).get()
-            if (!username.isNullOrBlank()) {
-                val t = userRepository.findByUsername(username)
+            val user = userRepository.findById(TokenUtils.verify(request.token).second).get()
+            if (!request.username.isNullOrBlank()) {
+                val t = userRepository.findByUsername(request.username)
                 if (t != null) return Response.failure("用户名已存在")
-                if (username.length > 50) return Response.failure("用户名长度不能超过50")
-                user.username = username
+                if (request.username.length > 50) return Response.failure("用户名长度不能超过50")
+                user.username = request.username
             }
-            if (!realName.isNullOrBlank()) {
-                if (realName.length > 50) return Response.failure("真实姓名长度不能超过50")
-                user.realName = realName
+            if (!request.realName.isNullOrBlank()) {
+                if (request.realName.length > 50) return Response.failure("真实姓名长度不能超过50")
+                user.realName = request.realName
             }
-            if (!avatar.isNullOrBlank()) {
-                user.avatar = avatar
+            if (!request.avatar.isNullOrBlank()) {
+                user.avatar = request.avatar
+            }
+            if (request.isCertified != null) {
+                user.isCertified = request.isCertified
+            }
+            if (!request.educationalBackground.isNullOrBlank()) {
+                user.educationalBackground = request.educationalBackground
+            }
+            if (request.institutionId != null) {
+                user.institution = institutionRepository.findById(request.institutionId).get()
             }
             userRepository.save(user)
             Response.success<Unit>("修改成功")
         }.onFailure {
             if (it is NoSuchElementException) {
-                redisUtils - "${TokenUtils.verify(token).second}"
+                redisUtils - "${TokenUtils.verify(request.token).second}"
                 return Response.failure("数据库中没有此用户或可能是token验证失败, 此会话已失效")
             }
             log.error(it.stackTraceToString())
@@ -436,5 +443,17 @@ class UserServiceImpl(
             if (it.message != null) return Response.failure("${it.message}")
             else log.error(it.stackTraceToString())
         }.getOrDefault(Response.failure("修改失败, 发生意外错误"))
+    }
+
+    override fun adjustmentCredit(userId: Long, value: Int): Response<UserDTO> {
+        log.info("adjustmentCredit: userId = $userId, value = $value")
+        var user = try {
+            userRepository.findById(userId).get()
+        } catch (e: NoSuchElementException) {
+            return Response.failure("数据库中没有此用户")
+        }
+        user.credit += value
+        user = userRepository.save(user)
+        return Response.success("修改成功", user.toDTO())
     }
 }

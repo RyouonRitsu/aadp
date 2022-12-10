@@ -21,6 +21,10 @@ class User(
     var registrationTime: LocalDateTime = LocalDateTime.now(),
     @Column(name = "real_name")
     var realName: String = "",
+    @Column(name = "is_certified", columnDefinition = "TINYINT(3) DEFAULT 0", nullable = false)
+    var isCertified: Boolean = false,
+    @Column(name = "educational_background")
+    var educationalBackground: String = "",
     @OneToOne(targetEntity = Institution::class)
     @JoinColumn(name = "institution_id", referencedColumnName = "id")
     var institution: Institution? = null
@@ -34,6 +38,8 @@ class User(
         avatar = avatar,
         registrationTime = registrationTime,
         realName = realName,
+        isCertified = isCertified,
+        educationalBackground = educationalBackground,
         institutionId = "${institution?.id}"
     )
 }

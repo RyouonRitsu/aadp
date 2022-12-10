@@ -34,6 +34,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web-services")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("org.springframework.boot:spring-boot-starter-aop")
+    implementation("org.springframework.boot:spring-boot-starter-validation:3.0.0")
     implementation("org.springframework.experimental:spring-aot:0.12.1")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")

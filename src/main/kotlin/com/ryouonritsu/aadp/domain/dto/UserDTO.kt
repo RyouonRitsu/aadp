@@ -24,6 +24,10 @@ data class UserDTO(
     var registrationTime: LocalDateTime = LocalDateTime.now(),
     @Schema(description = "real name", example = "real name", required = true)
     var realName: String = "",
+    @Schema(description = "是否认证", example = "false", required = true)
+    var isCertified: Boolean = false,
+    @Schema(description = "学历", example = "PhD", required = true)
+    var educationalBackground: String = "",
     @Schema(description = "institution id", example = "1")
     var institutionId: String? = null
 )

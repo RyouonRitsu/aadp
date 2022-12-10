@@ -1,6 +1,7 @@
 package com.ryouonritsu.aadp.service
 
 import com.ryouonritsu.aadp.domain.dto.UserDTO
+import com.ryouonritsu.aadp.domain.protocol.request.ModifyUserInfoRequest
 import com.ryouonritsu.aadp.domain.protocol.response.Response
 import org.springframework.web.multipart.MultipartFile
 
@@ -40,17 +41,13 @@ interface UserService {
 
     fun uploadFile(file: MultipartFile, token: String): Response<List<Map<String, String>>>
     fun deleteFile(token: String, url: String): Response<Unit>
-    fun modifyUserInfo(
-        token: String,
-        username: String?,
-        realName: String?,
-        avatar: String?,
-    ): Response<Unit>
-
+    fun modifyUserInfo(request: ModifyUserInfoRequest): Response<Unit>
     fun modifyEmail(
         token: String,
         email: String?,
         verifyCode: String?,
         password: String?
     ): Response<Unit>
+
+    fun adjustmentCredit(userId: Long, value: Int): Response<UserDTO>
 }

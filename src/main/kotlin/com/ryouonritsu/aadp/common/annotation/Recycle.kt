@@ -1,4 +1,4 @@
-package com.ryouonritsu.aadp.annotation
+package com.ryouonritsu.aadp.common.annotation
 
 import com.alibaba.fastjson2.JSON
 import com.alibaba.fastjson2.JSONArray
@@ -30,7 +30,7 @@ class RecycleAspect(
 ) {
     val log: Logger = LoggerFactory.getLogger(RecycleAspect::class.java)
 
-    @Pointcut("@annotation(com.ryouonritsu.aadp.annotation.Recycle)")
+    @Pointcut("@annotation(com.ryouonritsu.aadp.common.annotation.Recycle)")
     private fun recycle() {
     }
 
