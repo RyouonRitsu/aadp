@@ -1,5 +1,7 @@
 package com.ryouonritsu.aadp.controller
 
+import com.ryouonritsu.aadp.domain.protocol.request.RegisterRequest
+import com.ryouonritsu.aadp.domain.protocol.request.SendRegistrationVerificationCodeRequest
 import com.ryouonritsu.aadp.domain.protocol.response.Response
 import com.ryouonritsu.aadp.service.UserService
 import com.ryouonritsu.aadp.utils.RedisUtils
@@ -28,50 +30,22 @@ class UserController(
         description = "发送注册验证码到指定邮箱, 若modify为true, 则发送修改邮箱验证码, 默认为false"
     )
     fun sendRegistrationVerificationCode(
-        @RequestParam("email") @Parameter(description = "邮箱", required = true) email: String?,
-        @RequestParam(
-            "modify",
-            defaultValue = "false"
-        ) @Parameter(description = "是否修改邮箱") modify: Boolean
-    ) = userService.sendRegistrationVerificationCode(email, modify)
+        @RequestBody @Parameter(description = "发送注册验证码请求") request: SendRegistrationVerificationCodeRequest
+    ) = userService.sendRegistrationVerificationCode(request.email, request.modify)
 
     @PostMapping("/register")
     @Tag(name = "用户接口")
     @Operation(summary = "用户注册", description = "除了真实姓名其余必填")
     fun register(
-        @RequestParam("email") @Parameter(description = "邮箱", required = true) email: String?,
-        @RequestParam("verification_code") @Parameter(
-            description = "验证码",
-            required = true
-        ) verificationCode: String?,
-        @RequestParam("username") @Parameter(
-            description = "用户名",
-            required = true
-        ) username: String?,
-        @RequestParam("password1") @Parameter(
-            description = "密码",
-            required = true
-        ) password1: String?,
-        @RequestParam("password2") @Parameter(
-            description = "确认密码",
-            required = true
-        ) password2: String?,
-        @RequestParam(
-            "avatar",
-            defaultValue = ""
-        ) @Parameter(description = "个人头像") avatar: String,
-        @RequestParam(
-            value = "real_name",
-            defaultValue = ""
-        ) @Parameter(description = "真实姓名") realName: String,
+        @RequestBody @Parameter(description = "用户注册请求") request: RegisterRequest
     ) = userService.register(
-        email,
-        verificationCode,
-        username,
-        password1,
-        password2,
-        avatar,
-        realName
+        request.email,
+        request.verificationCode,
+        request.username,
+        request.password1,
+        request.password2,
+        request.avatar,
+        request.realName
     )
 
     @PostMapping("/login")
