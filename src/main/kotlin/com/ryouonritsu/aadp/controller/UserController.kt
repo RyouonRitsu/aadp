@@ -1,7 +1,6 @@
 package com.ryouonritsu.aadp.controller
 
-import com.ryouonritsu.aadp.domain.protocol.request.RegisterRequest
-import com.ryouonritsu.aadp.domain.protocol.request.SendRegistrationVerificationCodeRequest
+import com.ryouonritsu.aadp.domain.protocol.request.*
 import com.ryouonritsu.aadp.domain.protocol.response.Response
 import com.ryouonritsu.aadp.service.UserService
 import com.ryouonritsu.aadp.utils.RedisUtils
@@ -10,7 +9,6 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.multipart.MultipartFile
 import java.util.*
 
 /**
@@ -30,14 +28,14 @@ class UserController(
         description = "发送注册验证码到指定邮箱, 若modify为true, 则发送修改邮箱验证码, 默认为false"
     )
     fun sendRegistrationVerificationCode(
-        @RequestBody @Parameter(description = "发送注册验证码请求") request: SendRegistrationVerificationCodeRequest
+        @RequestBody request: SendRegistrationVerificationCodeRequest
     ) = userService.sendRegistrationVerificationCode(request.email, request.modify)
 
     @PostMapping("/register")
     @Tag(name = "用户接口")
     @Operation(summary = "用户注册", description = "除了真实姓名其余必填")
     fun register(
-        @RequestBody @Parameter(description = "用户注册请求") request: RegisterRequest
+        @RequestBody request: RegisterRequest
     ) = userService.register(
         request.email,
         request.verificationCode,
@@ -55,19 +53,8 @@ class UserController(
         description = "keep_login为true时, 保持登录状态, 否则token会在3天后失效, 默认为false"
     )
     fun login(
-        @RequestParam("username") @Parameter(
-            description = "用户名",
-            required = true
-        ) username: String?,
-        @RequestParam("password") @Parameter(
-            description = "密码",
-            required = true
-        ) password: String?,
-        @RequestParam(
-            "keep_login",
-            defaultValue = "false"
-        ) @Parameter(description = "是否记住登录") keepLogin: Boolean
-    ) = userService.login(username, password, keepLogin)
+        @RequestBody request: LoginRequest
+    ) = userService.login(request.username, request.password, request.keepLogin)
 
     @GetMapping("/logout")
     @Tag(name = "用户接口")
@@ -106,8 +93,8 @@ class UserController(
     @Tag(name = "用户接口")
     @Operation(summary = "发送找回密码验证码", description = "发送找回密码验证码到指定邮箱")
     fun sendForgotPasswordEmail(
-        @RequestParam("email") @Parameter(description = "邮箱", required = true) email: String?
-    ) = userService.sendForgotPasswordEmail(email)
+        @RequestBody request: SendForgotPasswordEmailRequest
+    ) = userService.sendForgotPasswordEmail(request.email)
 
     @PostMapping("/changePassword")
     @Tag(name = "用户接口")
@@ -116,42 +103,15 @@ class UserController(
         description = "可选忘记密码修改或正常修改密码, 参数的必要性根据模式选择, 如\"1: 验证码\"则表示模式1需要填写参数\"验证码\""
     )
     fun changePassword(
-        @RequestParam("mode") @Parameter(
-            description = "修改模式, 0为忘记密码修改, 1为正常修改",
-            required = true
-        ) mode: Int?,
-        @RequestParam(
-            "token",
-            defaultValue = ""
-        ) @Parameter(description = "1: 用户登陆后获取的token令牌") token: String,
-        @RequestParam(
-            "oldPassword",
-            required = false
-        ) @Parameter(description = "1: 旧密码") oldPassword: String?,
-        @RequestParam("password1") @Parameter(
-            description = "新密码",
-            required = true
-        ) password1: String?,
-        @RequestParam("password2") @Parameter(
-            description = "确认新密码",
-            required = true
-        ) password2: String?,
-        @RequestParam("email", required = false) @Parameter(
-            description = "0: 邮箱",
-            required = true
-        ) email: String?,
-        @RequestParam(
-            "verify_code",
-            required = false
-        ) @Parameter(description = "0: 验证码") verifyCode: String?
+        @RequestBody request: ChangePasswordRequest
     ) = userService.changePassword(
-        mode,
-        token,
-        oldPassword,
-        password1,
-        password2,
-        email,
-        verifyCode
+        request.mode,
+        request.token,
+        request.oldPassword,
+        request.password1,
+        request.password2,
+        request.email,
+        request.verifyCode
     )
 
     @PostMapping("/uploadFile")
@@ -161,12 +121,8 @@ class UserController(
         description = "将用户上传的文件保存在静态文件目录static/file/\${user_id}/\${file_name}下"
     )
     fun uploadFile(
-        @RequestParam("file") @Parameter(description = "文件", required = true) file: MultipartFile,
-        @RequestParam("token") @Parameter(
-            description = "用户认证令牌",
-            required = true
-        ) token: String,
-    ) = userService.uploadFile(file, token)
+        @RequestBody request: UploadFileRequest
+    ) = userService.uploadFile(request.file, request.token)
 
     @PostMapping("/deleteFile")
     @Tag(name = "用户接口")
@@ -175,12 +131,8 @@ class UserController(
         description = "删除用户上传的文件, 使分享链接失效"
     )
     fun deleteFile(
-        @RequestParam("token") @Parameter(
-            description = "用户认证令牌",
-            required = true
-        ) token: String,
-        @RequestParam("url") @Parameter(description = "文件分享链接", required = true) url: String
-    ) = userService.deleteFile(token, url)
+        @RequestBody request: DeleteFileRequest
+    ) = userService.deleteFile(request.token, request.url)
 
     @PostMapping("/modifyUserInfo")
     @Tag(name = "用户接口")
@@ -189,23 +141,13 @@ class UserController(
         description = "未填写的信息则保持原样不变"
     )
     fun modifyUserInfo(
-        @RequestParam("token") @Parameter(
-            description = "用户认证令牌",
-            required = true
-        ) token: String,
-        @RequestParam(
-            "username",
-            defaultValue = ""
-        ) @Parameter(description = "用户名", required = true) username: String?,
-        @RequestParam(
-            "real_name",
-            defaultValue = ""
-        ) @Parameter(description = "真实姓名", required = true) realName: String?,
-        @RequestParam(
-            "avatar",
-            defaultValue = ""
-        ) @Parameter(description = "个人头像", required = true) avatar: String?,
-    ) = userService.modifyUserInfo(token, username, realName, avatar)
+        @RequestBody request: ModifyUserInfoRequest
+    ) = userService.modifyUserInfo(
+        request.token,
+        request.username,
+        request.realName,
+        request.avatar
+    )
 
     @PostMapping("/modifyEmail")
     @Tag(name = "用户接口")
@@ -214,18 +156,6 @@ class UserController(
         description = "需要进行新邮箱验证和密码验证, 新邮箱验证发送验证码使用注册验证码接口即可"
     )
     fun modifyEmail(
-        @RequestParam("token") @Parameter(
-            description = "用户认证令牌",
-            required = true
-        ) token: String,
-        @RequestParam("email") @Parameter(description = "新邮箱", required = true) email: String?,
-        @RequestParam("verify_code") @Parameter(
-            description = "邮箱验证码",
-            required = true
-        ) verifyCode: String?,
-        @RequestParam("password") @Parameter(
-            description = "密码",
-            required = true
-        ) password: String?
-    ) = userService.modifyEmail(token, email, verifyCode, password)
+        @RequestBody request: ModifyEmailRequest
+    ) = userService.modifyEmail(request.token, request.email, request.verifyCode, request.password)
 }
