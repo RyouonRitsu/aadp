@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile
  * @author ryouonritsu
  */
 interface UserService {
-    fun sendRegistrationVerificationCode(email: String?, modify: Boolean): Map<String, Any>
+    fun sendRegistrationVerificationCode(email: String?, modify: Boolean): Response<Unit>
     fun register(
         email: String?,
         verificationCode: String?,
@@ -17,12 +17,17 @@ interface UserService {
         password2: String?,
         avatar: String,
         realName: String,
-    ): Map<String, Any>
+    ): Response<Unit>
 
-    fun login(username: String?, password: String?, keepLogin: Boolean): Map<String, Any>
+    fun login(
+        username: String?,
+        password: String?,
+        keepLogin: Boolean
+    ): Response<List<Map<String, String>>>
+
     fun showInfo(token: String): Response<List<UserDTO>>
-    fun selectUserByUserId(userId: Long): Map<String, Any>
-    fun sendForgotPasswordEmail(email: String?): Map<String, Any>
+    fun selectUserByUserId(userId: Long): Response<List<UserDTO>>
+    fun sendForgotPasswordEmail(email: String?): Response<Unit>
     fun changePassword(
         mode: Int?,
         token: String,
@@ -31,21 +36,21 @@ interface UserService {
         password2: String?,
         email: String?,
         verifyCode: String?
-    ): Map<String, Any>
+    ): Response<Unit>
 
-    fun uploadFile(file: MultipartFile, token: String): Map<String, Any>
-    fun deleteFile(token: String, url: String): Map<String, Any>
+    fun uploadFile(file: MultipartFile, token: String): Response<List<Map<String, String>>>
+    fun deleteFile(token: String, url: String): Response<Unit>
     fun modifyUserInfo(
         token: String,
         username: String?,
         realName: String?,
         avatar: String?,
-    ): Map<String, Any>
+    ): Response<Unit>
 
     fun modifyEmail(
         token: String,
         email: String?,
         verifyCode: String?,
         password: String?
-    ): Map<String, Any>
+    ): Response<Unit>
 }

@@ -25,18 +25,6 @@ class User(
     @JoinColumn(name = "institution_id", referencedColumnName = "id")
     var institution: Institution? = null
 ) {
-    fun toDict(): Map<String, Any?> = mapOf(
-        "user_id" to "$id",
-        "email" to email,
-        "username" to username,
-        "password" to password,
-        "credit" to credit,
-        "avatar" to avatar,
-        "registration_time" to registrationTime,
-        "real_name" to realName,
-        "institution_id" to (institution?.id ?: -1)
-    )
-
     fun toDTO() = UserDTO(
         id = "$id",
         email = email,

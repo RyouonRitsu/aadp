@@ -85,46 +85,28 @@ class UserServiceImpl(
         username: String,
         password: String,
         realName: String
-    ): Pair<Boolean, Map<String, Any>?> {
+    ): Pair<Boolean, Response<Unit>?> {
         if (!email.matches(Regex("[\\w\\\\.]+@[\\w\\\\.]+\\.\\w+"))) return Pair(
-            false, mapOf(
-                "success" to false,
-                "message" to "邮箱格式不正确"
-            )
+            false, Response.failure("邮箱格式不正确")
         )
         if (username.length > 50) return Pair(
-            false, mapOf(
-                "success" to false,
-                "message" to "用户名长度不能超过50"
-            )
+            false, Response.failure("用户名长度不能超过50")
         )
         if (password.length < 8 || password.length > 30) return Pair(
-            false, mapOf(
-                "success" to false,
-                "message" to "密码长度必须在8-30之间"
-            )
+            false, Response.failure("密码长度必须在8-30之间")
         )
         if (realName.length > 50) return Pair(
-            false, mapOf(
-                "success" to false,
-                "message" to "真实姓名长度不能超过50"
-            )
+            false, Response.failure("真实姓名长度不能超过50")
         )
         return Pair(true, null)
     }
 
-    private fun emailCheck(email: String?): Pair<Boolean, Map<String, Any>?> {
+    private fun emailCheck(email: String?): Pair<Boolean, Response<Unit>?> {
         if (email.isNullOrBlank()) return Pair(
-            false, mapOf(
-                "success" to false,
-                "message" to "邮箱不能为空"
-            )
+            false, Response.failure("邮箱不能为空")
         )
         if (!email.matches(Regex("[\\w\\\\.]+@[\\w\\\\.]+\\.\\w+"))) return Pair(
-            false, mapOf(
-                "success" to false,
-                "message" to "邮箱格式不正确"
-            )
+            false, Response.failure("邮箱格式不正确")
         )
         return Pair(true, null)
     }
@@ -134,7 +116,7 @@ class UserServiceImpl(
         verificationCode: String,
         email: String,
         subject: String
-    ): Map<String, Any> {
+    ): Response<Unit> {
         // 此处需替换成服务器地址!!!
 //        val (code, html) = getHtml("http://101.42.171.88:8090/registration_verification?verification_code=$verification_code")
         val (code, html) = getHtml("http://localhost:8090/$template?verification_code=$verificationCode")
@@ -142,27 +124,18 @@ class UserServiceImpl(
         return if (success) {
             redisUtils.set("verification_code", verificationCode, 5, TimeUnit.MINUTES)
             redisUtils.set("email", email, 5, TimeUnit.MINUTES)
-            mapOf(
-                "success" to true,
-                "message" to "验证码已发送"
-            )
-        } else mapOf(
-            "success" to false,
-            "message" to "验证码发送失败"
-        )
+            Response.success("验证码已发送")
+        } else Response.failure("验证码发送失败")
     }
 
     override fun sendRegistrationVerificationCode(
         email: String?,
         modify: Boolean
-    ): Map<String, Any> {
+    ): Response<Unit> {
         val (result, message) = emailCheck(email)
         if (!result && message != null) return message
         val t = userRepository.findByEmail(email!!)
-        if (t != null) return mapOf(
-            "success" to false,
-            "message" to "该邮箱已被注册"
-        )
+        if (t != null) return Response.failure("该邮箱已被注册")
         val subject = if (modify) "InkBook修改邮箱验证码" else "InkBook邮箱注册验证码"
         val verificationCode = (1..6).joinToString("") { "${(0..9).random()}" }
         return sendVerifyCodeEmailUseTemplate(
@@ -173,19 +146,13 @@ class UserServiceImpl(
         )
     }
 
-    private fun verifyCodeCheck(verifyCode: String?): Pair<Boolean, Map<String, Any>?> {
+    private fun verifyCodeCheck(verifyCode: String?): Pair<Boolean, Response<Unit>?> {
         val vc = redisUtils["verification_code"]
         if (vc.isNullOrBlank()) return Pair(
-            false, mapOf(
-                "success" to false,
-                "message" to "验证码无效"
-            )
+            false, Response.failure("验证码无效")
         )
         if (verifyCode != vc) return Pair(
-            false, mapOf(
-                "success" to false,
-                "message" to "验证码错误, 请再试一次"
-            )
+            false, Response.failure("验证码错误, 请再试一次")
         )
         redisUtils - "verification_code"
         return Pair(true, null)
@@ -199,50 +166,23 @@ class UserServiceImpl(
         password2: String?,
         avatar: String,
         realName: String
-    ): Map<String, Any> {
-        if (email.isNullOrBlank()) return mapOf(
-            "success" to false,
-            "message" to "邮箱不能为空"
-        )
-        if (verificationCode.isNullOrBlank()) return mapOf(
-            "success" to false,
-            "message" to "验证码不能为空"
-        )
-        if (username.isNullOrBlank()) return mapOf(
-            "success" to false,
-            "message" to "用户名不能为空"
-        )
-        if (password1.isNullOrBlank()) return mapOf(
-            "success" to false,
-            "message" to "密码不能为空"
-        )
-        if (password2.isNullOrBlank()) return mapOf(
-            "success" to false,
-            "message" to "确认密码不能为空"
-        )
+    ): Response<Unit> {
+        if (email.isNullOrBlank()) return Response.failure("邮箱不能为空")
+        if (verificationCode.isNullOrBlank()) return Response.failure("验证码不能为空")
+        if (username.isNullOrBlank()) return Response.failure("用户名不能为空")
+        if (password1.isNullOrBlank()) return Response.failure("密码不能为空")
+        if (password2.isNullOrBlank()) return Response.failure("确认密码不能为空")
         val (result, message) = check(email, username, password1, realName)
         if (!result && message != null) return message
         val t = userRepository.findByEmail(email)
-        if (t != null) return mapOf(
-            "success" to false,
-            "message" to "该邮箱已被注册"
-        )
+        if (t != null) return Response.failure("该邮箱已被注册")
         return runCatching {
             val (re, msg) = verifyCodeCheck(verificationCode)
             if (!re && msg != null) return@runCatching msg
-            if (redisUtils["email"] != email) return mapOf(
-                "success" to false,
-                "message" to "该邮箱与验证邮箱不匹配"
-            )
+            if (redisUtils["email"] != email) return Response.failure("该邮箱与验证邮箱不匹配")
             val temp = userRepository.findByUsername(username)
-            if (temp != null) return mapOf(
-                "success" to false,
-                "message" to "用户名已存在"
-            )
-            if (password1 != password2) return mapOf(
-                "success" to false,
-                "message" to "两次输入的密码不一致"
-            )
+            if (temp != null) return Response.failure("用户名已存在")
+            if (password1 != password2) return Response.failure("两次输入的密码不一致")
             userRepository.save(
                 User(
                     email = email,
@@ -252,55 +192,35 @@ class UserServiceImpl(
                     avatar = avatar
                 )
             )
-            mapOf(
-                "success" to true,
-                "message" to "注册成功"
-            )
-        }.onFailure { it.printStackTrace() }.getOrDefault(
-            mapOf(
-                "success" to false,
-                "message" to "注册失败, 发生意外错误"
-            )
-        )
+            Response.success("注册成功")
+        }.onFailure { log.error(it.stackTraceToString()) }
+            .getOrDefault(Response.failure("注册失败, 发生意外错误"))
     }
 
-    override fun login(username: String?, password: String?, keepLogin: Boolean): Map<String, Any> {
-        if (username.isNullOrBlank()) return mapOf(
-            "success" to false,
-            "message" to "用户名不能为空"
-        )
-        if (password.isNullOrBlank()) return mapOf(
-            "success" to false,
-            "message" to "密码不能为空"
-        )
+    override fun login(
+        username: String?,
+        password: String?,
+        keepLogin: Boolean
+    ): Response<List<Map<String, String>>> {
+        if (username.isNullOrBlank()) return Response.failure("用户名不能为空")
+        if (password.isNullOrBlank()) return Response.failure("密码不能为空")
         return runCatching {
-            val user = userRepository.findByUsername(username) ?: return mapOf(
-                "success" to false,
-                "message" to "用户不存在"
-            )
-            if (user.password != password) return mapOf(
-                "success" to false,
-                "message" to "密码错误"
-            )
+            val user =
+                userRepository.findByUsername(username) ?: return Response.failure("用户不存在")
+            if (user.password != password) return Response.failure("密码错误")
             val token = TokenUtils.sign(user)
             if (keepLogin) redisUtils["${user.id}"] = token
             else redisUtils.set("${user.id}", token, 3, TimeUnit.DAYS)
-            mapOf(
-                "success" to true,
-                "message" to "登录成功",
-                "data" to listOf(
+            Response.success(
+                "登录成功", listOf(
                     mapOf(
                         "token" to token,
                         "user_id" to "${user.id}"
                     )
                 )
             )
-        }.onFailure { it.printStackTrace() }.getOrDefault(
-            mapOf(
-                "success" to false,
-                "message" to "登录失败, 发生意外错误"
-            )
-        )
+        }.onFailure { log.error(it.stackTraceToString()) }
+            .getOrDefault(Response.failure("登录失败, 发生意外错误"))
     }
 
     override fun showInfo(token: String): Response<List<UserDTO>> {
@@ -312,41 +232,26 @@ class UserServiceImpl(
                 redisUtils - "${TokenUtils.verify(token).second}"
                 return Response.failure("数据库中没有此用户, 此会话已失效")
             }
-            it.printStackTrace()
+            log.error(it.stackTraceToString())
         }.getOrDefault(
             Response.failure("获取失败, 发生意外错误")
         )
     }
 
-    override fun selectUserByUserId(userId: Long): Map<String, Any> {
+    override fun selectUserByUserId(userId: Long): Response<List<UserDTO>> {
         return runCatching {
             val user = userRepository.findById(userId).get()
-            mapOf(
-                "success" to true,
-                "message" to "获取成功",
-                "data" to listOf(user.toDict())
-            )
+            Response.success("获取成功", listOf(user.toDTO()))
         }.onFailure {
-            if (it is NoSuchElementException) return mapOf(
-                "success" to false,
-                "message" to "数据库中没有此用户"
-            )
-            it.printStackTrace()
-        }.getOrDefault(
-            mapOf(
-                "success" to false,
-                "message" to "获取失败, 发生意外错误"
-            )
-        )
+            if (it is NoSuchElementException) return Response.failure("数据库中没有此用户")
+            log.error(it.stackTraceToString())
+        }.getOrDefault(Response.failure("获取失败, 发生意外错误"))
     }
 
-    override fun sendForgotPasswordEmail(email: String?): Map<String, Any> {
+    override fun sendForgotPasswordEmail(email: String?): Response<Unit> {
         val (result, message) = emailCheck(email)
         if (!result && message != null) return message
-        userRepository.findByEmail(email!!) ?: return mapOf(
-            "success" to false,
-            "message" to "该邮箱未被注册"
-        )
+        userRepository.findByEmail(email!!) ?: return Response.failure("该邮箱未被注册")
         val subject = "InkBook邮箱找回密码验证码"
         val verificationCode = (1..6).joinToString("") { "${(0..9).random()}" }
         return sendVerifyCodeEmailUseTemplate(
@@ -365,102 +270,63 @@ class UserServiceImpl(
         password2: String?,
         email: String?,
         verifyCode: String?
-    ): Map<String, Any> {
+    ): Response<Unit> {
         when (mode) {
             0 -> {
                 val (result, message) = verifyCodeCheck(verifyCode)
                 if (!result && message != null) return message
-                if (password1.isNullOrBlank() || password2.isNullOrBlank()) return mapOf(
-                    "success" to false,
-                    "message" to "密码不能为空"
+                if (password1.isNullOrBlank() || password2.isNullOrBlank()) return Response.failure(
+                    "密码不能为空"
                 )
-                if (password1 != password2) return mapOf(
-                    "success" to false,
-                    "message" to "两次密码不一致"
-                )
+                if (password1 != password2) return Response.failure("两次密码不一致")
                 val (re, msg) = emailCheck(email)
                 if (!re && msg != null) return msg
                 return runCatching {
-                    val user = userRepository.findByEmail(email!!) ?: return mapOf(
-                        "success" to false,
-                        "message" to "该邮箱未被注册, 发生意外错误, 请检查数据库"
-                    )
+                    val user = userRepository.findByEmail(email!!)
+                        ?: return Response.failure("该邮箱未被注册, 发生意外错误, 请检查数据库")
                     user.password = password1
                     userRepository.save(user)
                     redisUtils - "${user.id}"
-                    mapOf(
-                        "success" to true,
-                        "message" to "修改成功"
-                    )
-                }.onFailure { it.printStackTrace() }.getOrDefault(
-                    mapOf(
-                        "success" to false,
-                        "message" to "修改失败, 发生意外错误"
-                    )
-                )
+                    Response.success<Unit>("修改成功")
+                }.onFailure { log.error(it.stackTraceToString()) }
+                    .getOrDefault(Response.failure("修改失败, 发生意外错误"))
             }
 
             1 -> {
-                if (token.isBlank()) return mapOf(
-                    "success" to false,
-                    "message" to "请先登陆"
-                )
+                if (token.isBlank()) return Response.failure("请先登陆")
                 return runCatching {
                     val user = userRepository.findById(TokenUtils.verify(token).second).get()
-                    if (password1.isNullOrBlank() || password2.isNullOrBlank() || oldPassword.isNullOrBlank()) return mapOf(
-                        "success" to false,
-                        "message" to "密码不能为空"
+                    if (password1.isNullOrBlank() || password2.isNullOrBlank() || oldPassword.isNullOrBlank()) return Response.failure(
+                        "密码不能为空"
                     )
-                    if (user.password != oldPassword) return mapOf(
-                        "success" to false,
-                        "message" to "原密码错误"
-                    )
-                    if (password1.length < 8 || password1.length > 30) return mapOf(
-                        "success" to false,
-                        "message" to "密码长度必须在8-30位之间"
-                    )
-                    if (password1 != password2) return mapOf(
-                        "success" to false,
-                        "message" to "两次密码不一致"
-                    )
+                    if (user.password != oldPassword) return Response.failure("原密码错误")
+                    if (password1.length < 8 || password1.length > 30) return Response.failure("密码长度必须在8-30位之间")
+                    if (password1 != password2) return Response.failure("两次密码不一致")
                     user.password = password1
                     userRepository.save(user)
                     redisUtils - "${user.id}"
-                    mapOf(
-                        "success" to true,
-                        "message" to "修改成功"
-                    )
+                    Response.success<Unit>("修改成功")
                 }.onFailure {
                     if (it is NoSuchElementException) {
                         redisUtils - "${TokenUtils.verify(token).second}"
-                        return mapOf(
-                            "success" to false,
-                            "message" to "数据库中没有此用户或可能是token验证失败, 此会话已失效"
-                        )
-
+                        return Response.failure("数据库中没有此用户或可能是token验证失败, 此会话已失效")
                     }
-                    it.printStackTrace()
+                    log.error(it.stackTraceToString())
                 }.getOrDefault(
-                    mapOf(
-                        "success" to false,
-                        "message" to "修改失败, 发生意外错误"
-                    )
+                    Response.failure("修改失败, 发生意外错误")
                 )
             }
 
-            else -> return mapOf(
-                "success" to false,
-                "message" to "修改模式不在合法范围内, 应为0或1"
-            )
+            else -> return Response.failure("修改模式不在合法范围内, 应为0或1")
         }
     }
 
-    override fun uploadFile(file: MultipartFile, token: String): Map<String, Any> {
+    override fun uploadFile(
+        file: MultipartFile,
+        token: String
+    ): Response<List<Map<String, String>>> {
         return runCatching {
-            if (file.size >= 10 * 1024 * 1024) return mapOf(
-                "success" to false,
-                "message" to "上传失败, 文件大小超过最大限制10MB！"
-            )
+            if (file.size >= 10 * 1024 * 1024) return Response.failure("上传失败, 文件大小超过最大限制10MB！")
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss.SSS_")
             val time = LocalDateTime.now().format(formatter)
             val userId = TokenUtils.verify(token).second
@@ -478,41 +344,28 @@ class UserServiceImpl(
                     user = userRepository.findById(userId).get()
                 )
             )
-            mapOf(
-                "success" to true,
-                "message" to "上传成功",
-                "data" to listOf(
+            Response.success(
+                "上传成功", listOf(
                     mapOf(
                         "url" to fileUrl
                     )
                 )
             )
-        }.onFailure { it.printStackTrace() }.getOrDefault(
-            mapOf(
-                "success" to false,
-                "message" to "上传失败, 发生意外错误"
-            )
-        )
+        }.onFailure { log.error(it.stackTraceToString()) }
+            .getOrDefault(Response.failure("上传失败, 发生意外错误"))
     }
 
-    override fun deleteFile(token: String, url: String): Map<String, Any> {
+    override fun deleteFile(token: String, url: String): Response<Unit> {
         return try {
-            val file = userFileRepository.findByUrl(url) ?: return mapOf(
-                "success" to false,
-                "message" to "文件不存在"
+            val file = userFileRepository.findByUrl(url) ?: return Response.failure(
+                "文件不存在"
             )
             File(file.filePath).delete()
             userFileRepository.delete(file)
-            mapOf(
-                "success" to true,
-                "message" to "删除成功"
-            )
+            Response.failure("删除成功")
         } catch (e: Exception) {
-            e.printStackTrace()
-            mapOf(
-                "success" to false,
-                "message" to "删除失败, 发生意外错误"
-            )
+            log.error(e.stackTraceToString())
+            Response.failure("删除失败, 发生意外错误")
         }
     }
 
@@ -521,51 +374,31 @@ class UserServiceImpl(
         username: String?,
         realName: String?,
         avatar: String?
-    ): Map<String, Any> {
+    ): Response<Unit> {
         return runCatching {
             val user = userRepository.findById(TokenUtils.verify(token).second).get()
             if (!username.isNullOrBlank()) {
                 val t = userRepository.findByUsername(username)
-                if (t != null) return mapOf(
-                    "success" to false,
-                    "message" to "用户名已存在"
-                )
-                if (username.length > 50) return mapOf(
-                    "success" to false,
-                    "message" to "用户名长度不能超过50"
-                )
+                if (t != null) return Response.failure("用户名已存在")
+                if (username.length > 50) return Response.failure("用户名长度不能超过50")
                 user.username = username
             }
             if (!realName.isNullOrBlank()) {
-                if (realName.length > 50) return mapOf(
-                    "success" to false,
-                    "message" to "真实姓名长度不能超过50"
-                )
+                if (realName.length > 50) return Response.failure("真实姓名长度不能超过50")
                 user.realName = realName
             }
             if (!avatar.isNullOrBlank()) {
                 user.avatar = avatar
             }
             userRepository.save(user)
-            mapOf(
-                "success" to true,
-                "message" to "修改成功"
-            )
+            Response.success<Unit>("修改成功")
         }.onFailure {
             if (it is NoSuchElementException) {
                 redisUtils - "${TokenUtils.verify(token).second}"
-                return mapOf(
-                    "success" to false,
-                    "message" to "数据库中没有此用户或可能是token验证失败, 此会话已失效"
-                )
+                return Response.failure("数据库中没有此用户或可能是token验证失败, 此会话已失效")
             }
-            it.printStackTrace()
-        }.getOrDefault(
-            mapOf(
-                "success" to false,
-                "message" to "修改失败, 发生意外错误"
-            )
-        )
+            log.error(it.stackTraceToString())
+        }.getOrDefault(Response.failure("修改失败, 发生意外错误"))
     }
 
     override fun modifyEmail(
@@ -573,26 +406,17 @@ class UserServiceImpl(
         email: String?,
         verifyCode: String?,
         password: String?
-    ): Map<String, Any> {
+    ): Response<Unit> {
         return runCatching {
             val user = userRepository.findById(TokenUtils.verify(token).second).get()
             val (result, message) = emailCheck(email)
             if (!result && message != null) return message
             val t = userRepository.findByEmail(email!!)
-            if (t != null) return mapOf(
-                "success" to false,
-                "message" to "该邮箱已被注册"
-            )
+            if (t != null) return Response.failure("该邮箱已被注册")
             val (re, msg) = verifyCodeCheck(verifyCode)
             if (!re && msg != null) return@runCatching msg
-            if (redisUtils["email"] != email) return mapOf(
-                "success" to false,
-                "message" to "该邮箱与验证邮箱不匹配"
-            )
-            if (password != user.password) return mapOf(
-                "success" to false,
-                "message" to "密码错误"
-            )
+            if (redisUtils["email"] != email) return Response.failure("该邮箱与验证邮箱不匹配")
+            if (password != user.password) return Response.failure("密码错误")
             val (code, html) = getHtml("http://localhost:8090/change_email?email=${email}")
             val success =
                 if (code == 200 && html != null) sendEmail(
@@ -603,27 +427,14 @@ class UserServiceImpl(
             if (!success) throw Exception("邮件发送失败")
             user.email = email
             userRepository.save(user)
-            mapOf(
-                "success" to true,
-                "message" to "修改成功"
-            )
+            Response.success("修改成功")
         }.onFailure {
             if (it is NoSuchElementException) {
                 redisUtils - "${TokenUtils.verify(token).second}"
-                return mapOf(
-                    "success" to false,
-                    "message" to "数据库中没有此用户或可能是token验证失败, 此会话已失效"
-                )
+                return Response.failure("数据库中没有此用户或可能是token验证失败, 此会话已失效")
             }
-            if (it.message != null) return mapOf(
-                "success" to false,
-                "message" to "${it.message}"
-            ) else it.printStackTrace()
-        }.getOrDefault(
-            mapOf(
-                "success" to false,
-                "message" to "修改失败, 发生意外错误"
-            )
-        )
+            if (it.message != null) return Response.failure("${it.message}")
+            else log.error(it.stackTraceToString())
+        }.getOrDefault(Response.failure("修改失败, 发生意外错误"))
     }
 }
