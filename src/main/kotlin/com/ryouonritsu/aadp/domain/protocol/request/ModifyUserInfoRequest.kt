@@ -19,6 +19,8 @@ data class ModifyUserInfoRequest(
     val isCertified: Boolean?,
     @Schema(description = "学历")
     val educationalBackground: String?,
+    @Schema(description = "是否为管理员")
+    val isAdmin: Boolean?,
     @Schema(description = "机构ID")
     val institutionId: Long?
 )

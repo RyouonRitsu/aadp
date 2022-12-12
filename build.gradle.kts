@@ -44,7 +44,7 @@ dependencies {
     implementation("javax.mail:mail:1.5.0-b01")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.auth0:java-jwt:4.2.1")
-    implementation("com.alibaba.fastjson2:fastjson2:2.0.20")
+    implementation("com.alibaba.fastjson2:fastjson2-kotlin:2.0.21")
     implementation("io.github.furstenheim:copy_down:1.1")
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
