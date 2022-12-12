@@ -25,6 +25,8 @@ class User(
     var isCertified: Boolean = false,
     @Column(name = "educational_background")
     var educationalBackground: String = "",
+    @Column(name = "is_admin", columnDefinition = "TINYINT(3) DEFAULT 0", nullable = false)
+    var isAdmin: Boolean = false,
     @OneToOne(targetEntity = Institution::class)
     @JoinColumn(name = "institution_id", referencedColumnName = "id")
     var institution: Institution? = null
@@ -40,6 +42,7 @@ class User(
         realName = realName,
         isCertified = isCertified,
         educationalBackground = educationalBackground,
+        isAdmin = isAdmin,
         institutionId = "${institution?.id}"
     )
 }
