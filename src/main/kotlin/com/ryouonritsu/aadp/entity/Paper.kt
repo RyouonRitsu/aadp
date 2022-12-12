@@ -1,6 +1,6 @@
 package com.ryouonritsu.aadp.entity
 
-import com.alibaba.fastjson2.JSON
+import com.alibaba.fastjson2.to
 import com.ryouonritsu.aadp.domain.dto.PaperDTO
 import com.ryouonritsu.aadp.domain.dto.PaperOtherAuthorsDTO
 import javax.persistence.Entity
@@ -54,7 +54,7 @@ class Paper(
         paperPeriodical = paperPeriodical,
         paperAbstract = paperAbstract,
         paperKeyword = paperKeyword,
-        paperOtherAuthors = JSON.parseObject(paperOtherAuthors, PaperOtherAuthorsDTO::class.java),
+        paperOtherAuthors = paperOtherAuthors.to<PaperOtherAuthorsDTO>(),
         paperOtherInfo = paperOtherInfo
     )
 }
