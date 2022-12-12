@@ -17,7 +17,11 @@ class PaperServiceImpl(
     private val paperRepository: PaperRepository,
     private val redisUtils: RedisUtils
 ) : PaperService {
-    override fun searchPaperByKeyword(keyword: String, page: Int, limit: Int): Response<List<PaperDTO>> {
+    override fun searchPaperByKeyword(
+        keyword: String,
+        page: Int,
+        limit: Int
+    ): Response<List<PaperDTO>> {
         return runCatching {
             val pageable = PageRequest.of(page - 1, limit)
             var papers = paperRepository.findPapersByPaperTitleLike("%$keyword%", pageable)

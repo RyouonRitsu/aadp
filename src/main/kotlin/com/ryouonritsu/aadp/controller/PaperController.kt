@@ -33,6 +33,6 @@ class PaperController(
             description = "查询关键词",
             required = true
         ) keyword: String,
-        page: Int, limit: Int
+        page: Int = 1, limit: Int = 10
     ) = paperService.searchPaperByKeyword(keyword, page, limit)
 }
