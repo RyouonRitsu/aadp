@@ -1,8 +1,6 @@
 package com.ryouonritsu.aadp.entity
 
-import com.alibaba.fastjson2.to
 import com.ryouonritsu.aadp.domain.dto.PaperDTO
-import com.ryouonritsu.aadp.domain.dto.PaperOtherAuthorsDTO
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
@@ -54,7 +52,7 @@ class Paper(
         paperPeriodical = paperPeriodical,
         paperAbstract = paperAbstract,
         paperKeyword = paperKeyword,
-        paperOtherAuthors = paperOtherAuthors.to<PaperOtherAuthorsDTO>(),
+//        paperOtherAuthors = paperOtherAuthors.to<PaperOtherAuthorsDTO>(),
         paperOtherInfo = paperOtherInfo
     )
 }

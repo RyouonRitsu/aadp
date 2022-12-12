@@ -32,7 +32,7 @@ data class PaperDTO(
         example = "{\"other_authors\": [{\"author\": \"杨鑫\", \"unit\": \"西北师范大学教育科学学院\"}, {\"author\": \"尚雯\", \"unit\": \"西北师范大学教育科学学院\"}]}",
         required = true
     )
-    var paperOtherAuthors: PaperOtherAuthorsDTO,
+    var paperOtherAuthors: PaperOtherAuthorsDTO? = null,
     @Schema(description = "paper other info", example = "...", required = true)
     var paperOtherInfo: String
 )
