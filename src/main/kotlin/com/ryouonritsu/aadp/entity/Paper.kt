@@ -1,8 +1,12 @@
 package com.ryouonritsu.aadp.entity
 
+import com.alibaba.fastjson2.JSON
 import com.ryouonritsu.aadp.domain.dto.PaperDTO
-import java.time.LocalDateTime
-import javax.persistence.*
+import com.ryouonritsu.aadp.domain.dto.PaperOtherAuthorsDTO
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
 
 /**
  * @author WuKunchao
@@ -50,7 +54,7 @@ class Paper(
         paperPeriodical = paperPeriodical,
         paperAbstract = paperAbstract,
         paperKeyword = paperKeyword,
-        paperOtherAuthors = paperOtherAuthors,
+        paperOtherAuthors = JSON.parseObject(paperOtherAuthors, PaperOtherAuthorsDTO::class.java),
         paperOtherInfo = paperOtherInfo
     )
 }

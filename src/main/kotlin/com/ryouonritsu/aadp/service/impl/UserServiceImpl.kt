@@ -394,6 +394,9 @@ class UserServiceImpl(
             if (!request.educationalBackground.isNullOrBlank()) {
                 user.educationalBackground = request.educationalBackground
             }
+            if (request.isAdmin != null) {
+                user.isAdmin = request.isAdmin
+            }
             if (request.institutionId != null) {
                 user.institution = institutionRepository.findById(request.institutionId).get()
             }

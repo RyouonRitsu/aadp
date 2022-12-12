@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController
 class PaperController(
     private val paperService: PaperService,
     private val redisUtils: RedisUtils
-)  {
+) {
     @GetMapping("/searchPaperByKeyword")
     @Tag(name = "论文接口")
     @Operation(summary = "根据给出的关键词在标题中模糊查询论文")

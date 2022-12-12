@@ -27,8 +27,12 @@ data class PaperDTO(
     var paperAbstract: String,
     @Schema(description = "paper keyword", example = "aaa; bbb; ccc", required = true)
     var paperKeyword: String,
-    @Schema(description = "paper other authors", example = "{\"other_authors\": [{\"author\": \"杨鑫\", \"unit\": \"西北师范大学教育科学学院\"}, {\"author\": \"尚雯\", \"unit\": \"西北师范大学教育科学学院\"}]}", required = true)
-    var paperOtherAuthors: String,
+    @Schema(
+        description = "paper other authors",
+        example = "{\"other_authors\": [{\"author\": \"杨鑫\", \"unit\": \"西北师范大学教育科学学院\"}, {\"author\": \"尚雯\", \"unit\": \"西北师范大学教育科学学院\"}]}",
+        required = true
+    )
+    var paperOtherAuthors: PaperOtherAuthorsDTO,
     @Schema(description = "paper other info", example = "...", required = true)
     var paperOtherInfo: String
 )

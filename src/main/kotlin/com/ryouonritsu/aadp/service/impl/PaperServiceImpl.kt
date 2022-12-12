@@ -2,14 +2,10 @@ package com.ryouonritsu.aadp.service.impl
 
 import com.ryouonritsu.aadp.domain.dto.PaperDTO
 import com.ryouonritsu.aadp.domain.protocol.response.Response
-import com.ryouonritsu.aadp.entity.Paper
 import com.ryouonritsu.aadp.repository.PaperRepository
-import com.ryouonritsu.aadp.repository.UserRepository
 import com.ryouonritsu.aadp.service.PaperService
 import com.ryouonritsu.aadp.utils.RedisUtils
-import com.ryouonritsu.aadp.utils.TokenUtils
 import org.springframework.stereotype.Service
-import java.util.NoSuchElementException
 
 /**
  *
