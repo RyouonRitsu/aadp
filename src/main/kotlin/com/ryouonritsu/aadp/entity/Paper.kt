@@ -20,6 +20,9 @@ class Paper(
     var paperCited: Int,
     var paperPeriodical: String,
     var paperAbstract: String,
+    var paperKeyword: String,
+    var paperOtherAuthors: String,
+    var paperOtherInfo: String,
 ) {
     fun toDict(): Map<String, Any?> = mapOf(
         "user_id" to "$id",
@@ -30,7 +33,10 @@ class Paper(
         "paperClassification" to paperClassification,
         "paperCited" to paperCited,
         "paperPeriodical" to paperPeriodical,
-        "paperAbstract" to paperAbstract
+        "paperAbstract" to paperAbstract,
+        "paperKeyword" to paperKeyword,
+        "paperOtherAuthors" to paperOtherAuthors,
+        "paperOtherInfo" to paperOtherInfo
     )
 
     fun toDTO() = PaperDTO(
@@ -42,6 +48,9 @@ class Paper(
         paperClassification = paperClassification,
         paperCited = "$paperCited",
         paperPeriodical = paperPeriodical,
-        paperAbstract = paperAbstract
+        paperAbstract = paperAbstract,
+        paperKeyword = paperKeyword,
+        paperOtherAuthors = paperOtherAuthors,
+        paperOtherInfo = paperOtherInfo
     )
 }
