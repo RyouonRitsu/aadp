@@ -10,5 +10,7 @@ enum class ObjectEnum(
     PAPER(1, "论文"),
     INSTITUTION(2, "机构");
 
-    fun valueOf(code: Int) = values().first { it.code == code }
+    companion object {
+        fun valueOf(code: Int) = values().first { it.code == code }
+    }
 }

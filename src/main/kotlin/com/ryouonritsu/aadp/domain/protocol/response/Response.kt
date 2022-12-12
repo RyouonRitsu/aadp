@@ -19,6 +19,9 @@ class Response<T>(
         fun <T> success(message: String): Response<T> =
             Response(ExceptionEnum.SUCCESS.code, message, null)
 
+        fun <T> success(data: T): Response<T> =
+            Response(ExceptionEnum.SUCCESS.code, ExceptionEnum.SUCCESS.message, data)
+
         fun <T> success(message: String, data: T): Response<T> =
             Response(ExceptionEnum.SUCCESS.code, message, data)
 

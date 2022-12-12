@@ -18,4 +18,9 @@ object AADPConstant {
      * 字符串中划线
      */
     val MIDDLE_LINE_STR = "-"
+
+    /**
+     * 成功
+     */
+    val SUCCESS = "success"
 }

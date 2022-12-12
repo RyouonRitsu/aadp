@@ -3,6 +3,7 @@ package com.ryouonritsu.aadp.controller
 import com.ryouonritsu.aadp.common.annotation.AuthCheck
 import com.ryouonritsu.aadp.domain.protocol.request.*
 import com.ryouonritsu.aadp.domain.protocol.response.Response
+import com.ryouonritsu.aadp.service.AdminTaskService
 import com.ryouonritsu.aadp.service.UserService
 import com.ryouonritsu.aadp.utils.RedisUtils
 import com.ryouonritsu.aadp.utils.TokenUtils
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.*
 import java.util.*
 import javax.validation.Valid
+import javax.validation.constraints.Min
 
 /**
  * @author ryouonritsu
@@ -21,6 +23,7 @@ import javax.validation.Valid
 @Tag(name = "用户接口")
 class UserController(
     private val userService: UserService,
+    private val adminTaskService: AdminTaskService,
     private val redisUtils: RedisUtils
 ) {
     @PostMapping("/sendRegistrationVerificationCode")
@@ -160,4 +163,41 @@ class UserController(
     )
     fun adjustmentCredit(@Valid @RequestBody request: AdjustmentCreditRequest) =
         userService.adjustmentCredit(request.userId!!, request.value!!)
+
+    @PostMapping("/addTask")
+    @AuthCheck
+    @Tag(name = "用户接口")
+    @Operation(
+        summary = "添加管理员审核任务",
+        description = "添加任务, 需要填写任务对象类型和id"
+    )
+    fun addTask(@Valid @RequestBody request: AddTaskRequest) = adminTaskService.insert(request)
+
+    @GetMapping("/listAllTask")
+    @AuthCheck
+    @Tag(name = "用户接口")
+    @Operation(
+        summary = "获取所有管理员审核任务",
+        description = "获取所有管理员审核任务，分页返回"
+    )
+    fun listAllTask(
+        @RequestParam("page") @Parameter(
+            description = "页码",
+            required = true
+        ) @Min(1) page: Int = 1,
+        @RequestParam("limit") @Parameter(
+            description = "每页数量",
+            required = true
+        ) @Min(1) limit: Int = 10
+    ) = Response.success(adminTaskService.listAll(page, limit))
+
+    @PostMapping("/batchOperation")
+    @AuthCheck
+    @Tag(name = "用户接口")
+    @Operation(
+        summary = "批量操作管理员审核任务",
+        description = "批量操作管理员审核任务，可选操作有通过、拒绝"
+    )
+    fun batchOperation(@Valid @RequestBody request: TaskBatchOperationRequest) =
+        adminTaskService.batchOperation(request)
 }
