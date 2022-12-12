@@ -12,6 +12,11 @@ class Research (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0,
 
+    var refernum: Int = 0,
+
+    @Column(name = "research_field")
+    var researchField: String,
+
     @Column(name = "research_title")
     var researchTitle: String = "",
 
@@ -34,6 +39,8 @@ class Research (
 ){
     fun toDTO() = ResearchDTO(
         id = "$id",
+        refernum="$refernum",
+        researchField=researchField,
         researchTitle = researchTitle,
         researchAbstract = researchAbstract,
         researchContent = researchContent,

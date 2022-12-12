@@ -9,6 +9,12 @@ data class ResearchDTO(
     @Schema(description = "research id", example = "1", required = true)
     var id: String = "0",
 
+    @Schema(description = "refernum", example = "100", required = true)
+    var refernum: String = "0",
+
+    @Schema(description = "research field", required = true)
+    var researchField: String="",
+
     @Schema(description = "research title", required = true)
     var researchTitle: String="",
 
