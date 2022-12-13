@@ -82,7 +82,7 @@ class AdminTaskServiceImpl(
                         )
                     }
                 }
-            }, tasks.totalElements
+            }, "${tasks.totalElements}"
         )
     }
 

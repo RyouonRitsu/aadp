@@ -1,7 +1,11 @@
 package com.ryouonritsu.aadp.service
 
+import com.ryouonritsu.aadp.domain.dto.QueryCooperatorsResultDTO
 import com.ryouonritsu.aadp.domain.dto.UserDTO
 import com.ryouonritsu.aadp.domain.protocol.request.ModifyUserInfoRequest
+import com.ryouonritsu.aadp.domain.protocol.response.AcademicInformationResponse
+import com.ryouonritsu.aadp.domain.protocol.response.QueryPapersResponse
+import com.ryouonritsu.aadp.domain.protocol.response.QueryResearchesResponse
 import com.ryouonritsu.aadp.domain.protocol.response.Response
 import org.springframework.web.multipart.MultipartFile
 
@@ -48,4 +52,8 @@ interface UserService {
     ): Response<Unit>
 
     fun adjustmentCredit(userId: Long, value: Int): Response<UserDTO>
+    fun getAcademicInformation(): AcademicInformationResponse
+    fun queryPapers(page: Int, limit: Int): QueryPapersResponse
+    fun queryResearches(page: Int, limit: Int): QueryResearchesResponse
+    fun queryCooperators(): List<QueryCooperatorsResultDTO>
 }

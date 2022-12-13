@@ -1,13 +1,18 @@
 package com.ryouonritsu.aadp.service.impl
 
+import com.ryouonritsu.aadp.common.constants.AADPConstant
+import com.ryouonritsu.aadp.domain.dto.PaperAuthorsDTO
+import com.ryouonritsu.aadp.domain.dto.QueryCooperatorsResultDTO
+import com.ryouonritsu.aadp.domain.dto.SimpleUserDTO
 import com.ryouonritsu.aadp.domain.dto.UserDTO
 import com.ryouonritsu.aadp.domain.protocol.request.ModifyUserInfoRequest
+import com.ryouonritsu.aadp.domain.protocol.response.AcademicInformationResponse
+import com.ryouonritsu.aadp.domain.protocol.response.QueryPapersResponse
+import com.ryouonritsu.aadp.domain.protocol.response.QueryResearchesResponse
 import com.ryouonritsu.aadp.domain.protocol.response.Response
 import com.ryouonritsu.aadp.entity.User
 import com.ryouonritsu.aadp.entity.UserFile
-import com.ryouonritsu.aadp.repository.InstitutionRepository
-import com.ryouonritsu.aadp.repository.UserFileRepository
-import com.ryouonritsu.aadp.repository.UserRepository
+import com.ryouonritsu.aadp.repository.*
 import com.ryouonritsu.aadp.service.UserService
 import com.ryouonritsu.aadp.utils.RedisUtils
 import com.ryouonritsu.aadp.utils.RequestContext
@@ -16,6 +21,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.io.File
@@ -40,6 +47,8 @@ class UserServiceImpl(
     private val userRepository: UserRepository,
     private val userFileRepository: UserFileRepository,
     private val institutionRepository: InstitutionRepository,
+    private val paperRepository: PaperRepository,
+    private val researchRepository: ResearchRepository,
     @Value("\${static.file.prefix}")
     private val staticFilePrefix: String
 ) : UserService {
@@ -458,5 +467,53 @@ class UserServiceImpl(
         user.credit += value
         user = userRepository.save(user)
         return Response.success("修改成功", user.toDTO())
+    }
+
+    override fun getAcademicInformation() = AcademicInformationResponse(
+        academicCount = "${paperRepository.countByPaperAuthorId(RequestContext.userId.get()!!)}",
+        researchCount = "${researchRepository.countByResearchUserId(RequestContext.userId.get()!!)}",
+        totalCitations = "${paperRepository.sumPaperCitedByPaperAuthorId(RequestContext.userId.get()!!)}"
+    )
+
+    override fun queryPapers(page: Int, limit: Int): QueryPapersResponse {
+        val pageable = PageRequest.of(page - 1, limit, Sort.Direction.DESC, "paperCited")
+        val papers = paperRepository.findByPaperAuthorId(RequestContext.userId.get()!!, pageable)
+        return QueryPapersResponse(
+            papers.content.map { it.toDTO() },
+            "${papers.totalElements}"
+        )
+    }
+
+    override fun queryResearches(page: Int, limit: Int): QueryResearchesResponse {
+        val pageable = PageRequest.of(page - 1, limit, Sort.Direction.DESC, "updateTime")
+        val researches =
+            researchRepository.findByResearchUserId(RequestContext.userId.get()!!, pageable)
+        return QueryResearchesResponse(
+            researches.content.map { it.toDTO() },
+            "${researches.totalElements}"
+        )
+    }
+
+    override fun queryCooperators(): List<QueryCooperatorsResultDTO> {
+        val papers = paperRepository.findByPaperAuthorId(RequestContext.userId.get()!!)
+        val cooperatorMap = mutableMapOf<PaperAuthorsDTO, Long>()
+        papers.forEach {
+            it.toDTO().paperOtherAuthors.otherAuthors.forEach { author ->
+                cooperatorMap.compute(author) { _, v -> v?.plus(1) ?: 1 }
+            }
+        }
+        return cooperatorMap.toList().sortedByDescending { it.second }
+            .map {
+                val user = userRepository.findByUsernameLike(it.first.author)
+                val institution = institutionRepository.findByInstitutionNameLike(it.first.unit)
+                QueryCooperatorsResultDTO(
+                    SimpleUserDTO(
+                        userId = if (user.isEmpty) "${AADPConstant.INT_MINUS_1}" else "${user.content[0].id}",
+                        username = it.first.author,
+                        institutionId = if (institution.isEmpty) "${AADPConstant.INT_MINUS_1}" else "${institution.content[0].id}",
+                        institutionName = it.first.unit
+                    ), "${it.second}"
+                )
+            }
     }
 }

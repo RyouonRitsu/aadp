@@ -199,4 +199,58 @@ class UserController(
     )
     fun batchOperation(@Valid @RequestBody request: TaskBatchOperationRequest) =
         adminTaskService.batchOperation(request)
+
+    @GetMapping("/getAcademicInformation")
+    @AuthCheck
+    @Tag(name = "用户接口")
+    @Operation(
+        summary = "获取学术信息",
+        description = "获取学术信息"
+    )
+    fun getAcademicInformation() = Response.success(userService.getAcademicInformation())
+
+    @GetMapping("/queryPapers")
+    @AuthCheck
+    @Tag(name = "用户接口")
+    @Operation(
+        summary = "发表的学术成果",
+        description = "查询发表的学术成果，分页返回"
+    )
+    fun queryPapers(
+        @RequestParam("page") @Parameter(
+            description = "页码",
+            required = true
+        ) @Min(1) page: Int = 1,
+        @RequestParam("limit") @Parameter(
+            description = "每页数量",
+            required = true
+        ) @Min(1) limit: Int = 10
+    ) = Response.success(userService.queryPapers(page, limit))
+
+    @GetMapping("/queryResearches")
+    @AuthCheck
+    @Tag(name = "用户接口")
+    @Operation(
+        summary = "发表的研究",
+        description = "查询发表的研究，分页返回"
+    )
+    fun queryResearches(
+        @RequestParam("page") @Parameter(
+            description = "页码",
+            required = true
+        ) @Min(1) page: Int = 1,
+        @RequestParam("limit") @Parameter(
+            description = "每页数量",
+            required = true
+        ) @Min(1) limit: Int = 10
+    ) = Response.success(userService.queryResearches(page, limit))
+
+    @GetMapping("/queryCooperators")
+    @AuthCheck
+    @Tag(name = "用户接口")
+    @Operation(
+        summary = "合作者",
+        description = "查询合作者"
+    )
+    fun queryCooperators() = Response.success(userService.queryCooperators())
 }

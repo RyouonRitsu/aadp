@@ -3,12 +3,10 @@ package com.ryouonritsu.aadp.controller
 import com.ryouonritsu.aadp.common.annotation.AuthCheck
 import com.ryouonritsu.aadp.domain.protocol.request.*
 import com.ryouonritsu.aadp.service.ResearchService
-import com.ryouonritsu.aadp.utils.RequestContext
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.*
-
 import javax.validation.Valid
 
 

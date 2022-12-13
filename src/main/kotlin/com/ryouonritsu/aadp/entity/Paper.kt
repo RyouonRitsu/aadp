@@ -44,24 +44,6 @@ class Paper(
     @Column(name = "paper_click")
     var paperClick: Long = 0,
 ) {
-    fun toDict(): Map<String, Any?> = mapOf(
-        "user_id" to "$id",
-        "paperTitle" to paperTitle,
-        "paperAuthor" to paperAuthor,
-        "paperUnit" to paperUnit,
-        "paperDate" to paperDate,
-        "paperClassification" to paperClassification,
-        "paperCited" to paperCited,
-        "paperPeriodical" to paperPeriodical,
-        "paperAbstract" to paperAbstract,
-        "paperKeyword" to paperKeyword,
-        "paperOtherAuthors" to paperOtherAuthors,
-        "paperOtherInfo" to paperOtherInfo,
-        "paperLink" to paperLink,
-        "paperReference" to paperReference,
-        "paperClick" to paperClick
-    )
-
     fun toDTO() = PaperDTO(
         id = "$id",
         paperTitle = paperTitle,
