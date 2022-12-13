@@ -55,6 +55,7 @@ class ResearchController(
 
     @PostMapping("/selectPopResearch")
     @Tag(name = "研究接口")
+    @AuthCheck
     @Operation(summary = "找到最受欢迎的研究")
     fun selectPopResearch(
     ) = researchService.selectPopResearch()
