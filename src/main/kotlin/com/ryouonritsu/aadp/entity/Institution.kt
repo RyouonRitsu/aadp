@@ -15,6 +15,8 @@ class Institution(
     var institutionName: String,
     @Column(name = "institution_info")
     var institutionInfo: String,
+    @Column(name = "institution_image")
+    var institutionImage: String,
     @OneToOne(targetEntity = User::class)
     @JoinColumn(name = "creator_id", referencedColumnName = "id")
     var creator: User
@@ -23,6 +25,7 @@ class Institution(
         id = "$id",
         institutionName = institutionName,
         institutionInfo = institutionInfo,
+        institutionImage = institutionImage,
         creatorId = "${creator.id}"
     )
 }

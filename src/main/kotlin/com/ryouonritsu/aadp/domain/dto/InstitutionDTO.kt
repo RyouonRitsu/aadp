@@ -13,6 +13,8 @@ data class InstitutionDTO(
     var institutionName: String,
     @Schema(description = "institution info", example = "institution info", required = true)
     var institutionInfo: String,
+    @Schema(description = "institution image", example = "institution image", required = true)
+    var institutionImage: String,
     @Schema(description = "creator id", example = "1", required = true)
     var creatorId: String
 )
