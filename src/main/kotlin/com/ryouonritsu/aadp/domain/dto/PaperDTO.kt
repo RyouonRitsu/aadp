@@ -33,6 +33,24 @@ data class PaperDTO(
         required = true
     )
     var paperOtherAuthors: PaperOtherAuthorsDTO,
-    @Schema(description = "paper other info", example = "...", required = true)
-    var paperOtherInfo: String
+    @Schema(
+        description = "paper other info",
+        example = "{\"DOI\": \"10.13694/j.cnki.ddjylt.20221207.001\", \"专辑\": \"社会科学Ⅱ辑\", \"专题\": \"教育理论与教育管理\", \"分类号\": \"G525.1\"}",
+        required = true
+    )
+    var paperOtherInfo: String,
+    @Schema(
+        description = "paper link",
+        example = "https://kns.cnki.net/kcms/detail/detail.aspx?dbcode=CAPJ&dbname=CAPJLAST&filename=JYLT20221206002",
+        required = true
+    )
+    var paperLink: String,
+    @Schema(
+        description = "paper reference",
+        example = "{\"refs\": [{\"ref\": \"论教育仪式中的教师角色及其功能定位[J]. 康翠萍,王之. 教师教育研究. 2021(04)\"}, {\"ref\": \"农村教师乡土情怀的意涵与培育路径[J]. 张立平,程姣姣. 教育学术月刊. 2021(01)\"}]}",
+        required = true
+    )
+    var paperReference: String,
+    @Schema(description = "paper click", example = "23", required = true)
+    var paperClick: Long,
 )
