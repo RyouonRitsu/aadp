@@ -16,6 +16,9 @@ class Response<T>(
     val data: T?
 ) {
     companion object {
+        fun success(): Response<Unit> =
+            Response(ExceptionEnum.SUCCESS.code, ExceptionEnum.SUCCESS.message, null)
+
         fun <T> success(message: String): Response<T> =
             Response(ExceptionEnum.SUCCESS.code, message, null)
 

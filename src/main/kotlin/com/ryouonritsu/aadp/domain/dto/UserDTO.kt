@@ -32,7 +32,7 @@ data class UserDTO(
     @Schema(description = "是否管理员", example = "false", required = true)
     var isAdmin: Boolean = false,
     @Schema(description = "institution id", example = "1")
-    var institutionId: String = "${AADPConstant.INT_MINUS_1}",
+    var institutionId: String = "${AADPConstant.LONG_MINUS_1}",
     @Schema(description = "institution name", example = "institution name")
     var institutionName: String = AADPConstant.EMPTY_STR
 )

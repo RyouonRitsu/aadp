@@ -52,8 +52,8 @@ interface UserService {
     ): Response<Unit>
 
     fun adjustmentCredit(userId: Long, value: Int): Response<UserDTO>
-    fun getAcademicInformation(): AcademicInformationResponse
-    fun queryPapers(page: Int, limit: Int): QueryPapersResponse
-    fun queryResearches(page: Int, limit: Int): QueryResearchesResponse
-    fun queryCooperators(): List<QueryCooperatorsResultDTO>
+    fun getAcademicInformation(userId: Long): AcademicInformationResponse
+    fun queryPapers(userId: Long, page: Int, limit: Int): QueryPapersResponse
+    fun queryResearches(userId: Long, page: Int, limit: Int): QueryResearchesResponse
+    fun queryCooperators(userId: Long): List<QueryCooperatorsResultDTO>
 }

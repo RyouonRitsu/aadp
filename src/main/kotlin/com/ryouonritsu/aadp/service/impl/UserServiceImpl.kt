@@ -469,33 +469,33 @@ class UserServiceImpl(
         return Response.success("修改成功", user.toDTO())
     }
 
-    override fun getAcademicInformation() = AcademicInformationResponse(
-        academicCount = "${paperRepository.countByPaperAuthorId(RequestContext.userId.get()!!)}",
-        researchCount = "${researchRepository.countByResearchUserId(RequestContext.userId.get()!!)}",
-        totalCitations = "${paperRepository.sumPaperCitedByPaperAuthorId(RequestContext.userId.get()!!)}"
+    override fun getAcademicInformation(userId: Long) = AcademicInformationResponse(
+        academicCount = "${paperRepository.countByPaperAuthorId(userId)}",
+        researchCount = "${researchRepository.countByResearchUserId(userId)}",
+        totalCitations = "${paperRepository.sumPaperCitedByPaperAuthorId(userId)}"
     )
 
-    override fun queryPapers(page: Int, limit: Int): QueryPapersResponse {
+    override fun queryPapers(userId: Long, page: Int, limit: Int): QueryPapersResponse {
         val pageable = PageRequest.of(page - 1, limit, Sort.Direction.DESC, "paperCited")
-        val papers = paperRepository.findByPaperAuthorId(RequestContext.userId.get()!!, pageable)
+        val papers = paperRepository.findByPaperAuthorId(userId, pageable)
         return QueryPapersResponse(
             papers.content.map { it.toDTO() },
             "${papers.totalElements}"
         )
     }
 
-    override fun queryResearches(page: Int, limit: Int): QueryResearchesResponse {
+    override fun queryResearches(userId: Long, page: Int, limit: Int): QueryResearchesResponse {
         val pageable = PageRequest.of(page - 1, limit, Sort.Direction.DESC, "updateTime")
         val researches =
-            researchRepository.findByResearchUserId(RequestContext.userId.get()!!, pageable)
+            researchRepository.findByResearchUserId(userId, pageable)
         return QueryResearchesResponse(
             researches.content.map { it.toDTO() },
             "${researches.totalElements}"
         )
     }
 
-    override fun queryCooperators(): List<QueryCooperatorsResultDTO> {
-        val papers = paperRepository.findByPaperAuthorId(RequestContext.userId.get()!!)
+    override fun queryCooperators(userId: Long): List<QueryCooperatorsResultDTO> {
+        val papers = paperRepository.findByPaperAuthorId(userId)
         val cooperatorMap = mutableMapOf<PaperAuthorsDTO, Long>()
         papers.forEach {
             it.toDTO().paperOtherAuthors.otherAuthors.forEach { author ->
@@ -508,9 +508,9 @@ class UserServiceImpl(
                 val institution = institutionRepository.findByInstitutionNameLike(it.first.unit)
                 QueryCooperatorsResultDTO(
                     SimpleUserDTO(
-                        userId = if (user.isEmpty) "${AADPConstant.INT_MINUS_1}" else "${user.content[0].id}",
+                        userId = if (user.isEmpty) "${AADPConstant.LONG_MINUS_1}" else "${user.content[0].id}",
                         username = it.first.author,
-                        institutionId = if (institution.isEmpty) "${AADPConstant.INT_MINUS_1}" else "${institution.content[0].id}",
+                        institutionId = if (institution.isEmpty) "${AADPConstant.LONG_MINUS_1}" else "${institution.content[0].id}",
                         institutionName = it.first.unit
                     ), "${it.second}"
                 )

@@ -7,7 +7,7 @@ object AADPConstant {
     /**
      * 整形-1
      */
-    val INT_MINUS_1 = -1
+    val LONG_MINUS_1 = -1L
 
     /**
      * 空字符串

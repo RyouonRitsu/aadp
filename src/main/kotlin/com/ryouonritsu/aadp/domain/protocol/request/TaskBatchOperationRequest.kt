@@ -14,7 +14,7 @@ data class TaskBatchOperationRequest(
         required = true
     )
     val taskIds: List<Long>,
-    @NotNull(message = "OperationType is mandatory")
+    @field:NotNull(message = "OperationType is mandatory")
     @Schema(description = "操作类型，true表示接受，false表示拒绝", example = "true", required = true)
     val operationType: Boolean?
 )

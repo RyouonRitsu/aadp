@@ -44,7 +44,7 @@ class User(
         isCertified = isCertified,
         educationalBackground = educationalBackground,
         isAdmin = isAdmin,
-        institutionId = "${institution?.id ?: AADPConstant.INT_MINUS_1}",
+        institutionId = "${institution?.id ?: AADPConstant.LONG_MINUS_1}",
         institutionName = institution?.institutionName ?: AADPConstant.EMPTY_STR
     )
 }
