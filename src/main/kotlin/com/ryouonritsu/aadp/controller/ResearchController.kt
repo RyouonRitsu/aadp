@@ -44,6 +44,7 @@ class ResearchController(
 
     @GetMapping("/selectResearchByResearchField")
     @Tag(name = "研究接口")
+    @AuthCheck
     @Operation(summary = "根据领域查询研究信息")
     fun selectResearchByResearchField(
         @RequestParam("research_field") @Parameter(
@@ -54,7 +55,6 @@ class ResearchController(
 
     @PostMapping("/selectPopResearch")
     @Tag(name = "研究接口")
-    @AuthCheck
     @Operation(summary = "找到最受欢迎的研究")
     fun selectPopResearch(
     ) = researchService.selectPopResearch()

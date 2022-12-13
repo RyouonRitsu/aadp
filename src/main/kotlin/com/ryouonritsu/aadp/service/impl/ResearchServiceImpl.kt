@@ -62,6 +62,9 @@ class ResearchServiceImpl(
         } catch (e: NoSuchElementException) {
             return Response.failure("未找热门研究")
         }
+        if(researchList.size>10) {
+            researchList = researchList.take(10)
+        }
 //    返回的response？
         return Response.success("查找成功", researchList.map{it.toDTO()})
 
@@ -72,6 +75,10 @@ class ResearchServiceImpl(
             researchRepository.findLatest()
         } catch (e: NoSuchElementException) {
             return Response.failure("未找到研究")
+        }
+
+        if(researchList.size>10) {
+            researchList = researchList.take(10)
         }
         //返回的response？
         //return Response.success("修改成功", researchList.toDTO()
