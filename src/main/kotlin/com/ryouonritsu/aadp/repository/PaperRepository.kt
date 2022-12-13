@@ -16,7 +16,10 @@ interface PaperRepository : JpaRepository<Paper, Long> {
     fun findPapersByPaperTitleLike(keyword: String, pageable: Pageable): Page<Paper>
     fun countByPaperAuthorId(userId: Long): Long
 
-    @Query("SELECT SUM(p.paperCited) FROM Paper p WHERE p.paperAuthorId = ?1")
+    @Query(
+        "SELECT IFNULL(SUM(p.paper_cited), 0) FROM paper p WHERE p.paper_author_id = ?1",
+        nativeQuery = true
+    )
     fun sumPaperCitedByPaperAuthorId(userId: Long): Long
 
     fun findByPaperAuthorId(userId: Long, pageable: Pageable): Page<Paper>
