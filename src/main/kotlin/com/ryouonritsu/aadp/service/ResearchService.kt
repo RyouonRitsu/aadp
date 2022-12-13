@@ -5,6 +5,13 @@ import com.ryouonritsu.aadp.domain.protocol.request.ModifyUserInfoRequest
 import com.ryouonritsu.aadp.domain.protocol.response.Response
 
 interface ResearchService {
+    fun createResearch(
+        researchTitle: String?,
+        researchAbstract: String?,
+        researchContent:String?,
+        researchField:String?,
+        researchUserId: Long
+    ):Response<Unit>
 
     fun selectResearchByResearchId(researchId: Long): Response<List<ResearchDTO>>
 

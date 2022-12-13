@@ -3,6 +3,7 @@ package com.ryouonritsu.aadp.service.impl
 import com.ryouonritsu.aadp.domain.dto.ResearchDTO
 import com.ryouonritsu.aadp.domain.protocol.response.Response
 import com.ryouonritsu.aadp.entity.Research
+import com.ryouonritsu.aadp.entity.User
 import com.ryouonritsu.aadp.repository.InstitutionRepository
 import com.ryouonritsu.aadp.repository.ResearchRepository
 import com.ryouonritsu.aadp.repository.UserRepository
@@ -21,6 +22,30 @@ abstract class ResearchServiceImpl(
     private val institutionRepository: InstitutionRepository
 ) : ResearchService {
 
+    override fun createResearch(
+        researchTitle: String,
+        researchAbstract: String,
+        researchContent: String,
+        researchField: String,
+        researchUserId: Long
+    ): Response<Unit> {
+        val r = researchRepository.findByResearchTitle(researchTitle)
+        if(r != null) return Response.failure("标题重复")
+        return runCatching {
+            researchRepository.save(
+                Research(
+                    researchTitle = researchTitle,
+                    researchAbstract = researchAbstract,
+                    researchContent = researchContent,
+                    researchField = researchField,
+                    researchUserId = researchUserId,
+                )
+            )
+            Response.success("创建成功")
+        }.onFailure { ResearchServiceImpl.log.error(it.stackTraceToString()) }
+            .getOrDefault(Response.failure("创建失败, 发生意外错误"))
+    }
+
     override fun selectPopResearch(): Response<List<ResearchDTO>> {
         log.info("查找最受欢迎研究")
         var researchList = try {
@@ -32,7 +57,6 @@ abstract class ResearchServiceImpl(
         return Response.success("查找成功", researchList.map(it.toDTO()))
 
     }
-
     override fun selectLatestResearch(): Response<List<ResearchDTO>> {
         log.info("查找最新研究")
         var researchList = try {
@@ -83,7 +107,6 @@ abstract class ResearchServiceImpl(
         research = researchRepository.save(research)
         return Response.success("修改成功", research.toDTO())
     }
-
     override fun modifyResearchTitle(researchId: Long, researchTitle: String): Response<ResearchDTO> {
         log.info("modifyResearchTitle researchId = $researchId, researchTitle = $researchTitle")
         var research = try {

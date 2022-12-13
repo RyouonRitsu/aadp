@@ -14,8 +14,11 @@ class Research (
 
     var refernum: Int = 0,
 
+    @Column(name = "user_id")
+    var researchUserId: Long,
+
     @Column(name = "research_field")
-    var researchField: String,
+    var researchField: String="",
 
     @Column(name = "research_title")
     var researchTitle: String = "",
@@ -32,10 +35,10 @@ class Research (
     @Column(name = "update_time")
     var updateTime: LocalDateTime = LocalDateTime.now(),
 
-    @OneToOne(targetEntity = User::class)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-//    var userList: List<User>? = null
-    var user: User? =null
+//    @OneToOne(targetEntity = User::class)
+//    @JoinColumn(name = "user_id", referencedColumnName = "id")
+////    var userList: List<User>? = null
+//    var user: User? =null
 ){
     fun toDTO() = ResearchDTO(
         id = "$id",
@@ -46,6 +49,6 @@ class Research (
         researchContent = researchContent,
         publishTime = publishTime,
         updateTime = updateTime,
-        userId = "$user?.id"
+        userId = "$researchUserId"
     )
 }

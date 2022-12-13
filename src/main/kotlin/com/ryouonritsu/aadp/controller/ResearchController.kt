@@ -1,10 +1,7 @@
 package com.ryouonritsu.aadp.controller
 
 import com.ryouonritsu.aadp.common.annotation.AuthCheck
-import com.ryouonritsu.aadp.domain.protocol.request.AdjustRefernumRequest
-import com.ryouonritsu.aadp.domain.protocol.request.AdjustmentCreditRequest
-import com.ryouonritsu.aadp.domain.protocol.request.ModifyResearchContentRequest
-import com.ryouonritsu.aadp.domain.protocol.request.ModifyResearchTitleRequest
+import com.ryouonritsu.aadp.domain.protocol.request.*
 import com.ryouonritsu.aadp.service.ResearchService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -24,6 +21,19 @@ import javax.validation.Valid
 class ResearchController(
     private val researchService: ResearchService,
 ) {
+    @PostMapping("/createResearch")
+    @Tag(name = "研究接口")
+    fun createResearch(
+        @RequestBody request: CreateRequest
+    )= researchService.createResearch(
+        request.researchTitle,
+        request.researchAbstract,
+        request.researchContent,
+        request.researchField,
+        request.researchUserId
+    )
+
+
     @PostMapping("/selectResearchByResearchId")
     @Tag(name = "研究接口")
     @Operation(summary = "根据id查询研究信息")

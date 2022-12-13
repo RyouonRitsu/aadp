@@ -13,5 +13,5 @@ data class CreateRequest(
     @Schema(description = "研究内容", example = "content", required = true)
     val researchContent: String?,
     @Schema(description = "所属用户id",required = true)
-    val researchUserId: Long?
+    val researchUserId: Long
 )
