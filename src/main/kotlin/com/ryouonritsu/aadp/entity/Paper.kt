@@ -1,7 +1,6 @@
 package com.ryouonritsu.aadp.entity
 
 import com.ryouonritsu.aadp.domain.dto.PaperDTO
-import java.time.LocalDateTime
 import javax.persistence.*
 
 /**
@@ -26,17 +25,17 @@ class Paper(
     var paperCited: Int,
     @Column(name = "paper_periodical")
     var paperPeriodical: String,
-    @Column(name = "paper_abstract", columnDefinition = "longtext")
+    @Column(name = "paper_abstract", columnDefinition = "mediumtext")
     var paperAbstract: String,
     @Column(name = "paper_keyword")
     var paperKeyword: String,
-    @Column(name = "paper_other_authors", columnDefinition = "longtext")
+    @Column(name = "paper_other_authors", columnDefinition = "mediumtext")
     var paperOtherAuthors: String,
-    @Column(name = "paper_other_info")
+    @Column(name = "paper_other_info", columnDefinition = "mediumtext")
     var paperOtherInfo: String,
     @Column(name = "paper_link")
     var paperLink: String,
-    @Column(name = "paper_reference")
+    @Column(name = "paper_reference", columnDefinition = "mediumtext")
     var paperReference: String,
     @Column(name = "paper_click")
     var paperClick: Long = 0,
