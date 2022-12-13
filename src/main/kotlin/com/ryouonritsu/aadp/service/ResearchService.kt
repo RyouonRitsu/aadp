@@ -1,5 +1,6 @@
 package com.ryouonritsu.aadp.service
 
+import com.ryouonritsu.aadp.domain.dto.RDTO
 import com.ryouonritsu.aadp.domain.dto.ResearchDTO
 import com.ryouonritsu.aadp.domain.protocol.request.ModifyUserInfoRequest
 import com.ryouonritsu.aadp.domain.protocol.response.Response
@@ -14,7 +15,9 @@ interface ResearchService {
         researchUserId: Long
     ):Response<Unit>
 
+//    fun showInfo(researchId: Long) : Response<RDTO>
     fun selectResearchByResearchId(researchId: Long): Response<ResearchDTO>
+    fun selectResearchByUserId(userId: Long): Response<List<ResearchDTO>>
 
     fun selectResearchByResearchField(researchField: String):Response<List<ResearchDTO>>
 

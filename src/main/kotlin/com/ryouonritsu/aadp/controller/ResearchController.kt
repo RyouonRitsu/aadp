@@ -3,6 +3,7 @@ package com.ryouonritsu.aadp.controller
 import com.ryouonritsu.aadp.common.annotation.AuthCheck
 import com.ryouonritsu.aadp.domain.protocol.request.*
 import com.ryouonritsu.aadp.service.ResearchService
+import com.ryouonritsu.aadp.utils.RequestContext
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -29,6 +30,10 @@ class ResearchController(
         request.researchUserId
     )
 
+//    @PostMapping("/showInfo")
+//    @Tag(name = "研究接口")
+//    @Operation(summary = "返回研究的详情")
+//    fun showInfo() = researchService.showInfo(researchId)
 
     @GetMapping("/selectResearchByResearchId")
     @Tag(name = "研究接口")
@@ -41,6 +46,16 @@ class ResearchController(
         ) researchId: Long
     ) = researchService.selectResearchByResearchId(researchId)
 
+    @GetMapping("/selectResearchByUserId")
+    @Tag(name = "研究接口")
+    @AuthCheck
+    @Operation(summary = "根据userId查询研究")
+    fun selectResearchByUserId(
+        @RequestParam("user_id") @Parameter(
+            description = "用户id",
+            required = true
+        ) userId: Long
+    ) = researchService.selectResearchByUserId(userId)
 
     @GetMapping("/selectResearchByResearchField")
     @Tag(name = "研究接口")

@@ -1,6 +1,7 @@
 package com.ryouonritsu.aadp.service.impl
 
 import com.alibaba.fastjson2.contains
+import com.ryouonritsu.aadp.domain.dto.RDTO
 import com.ryouonritsu.aadp.domain.dto.ResearchDTO
 import com.ryouonritsu.aadp.domain.protocol.response.Response
 import com.ryouonritsu.aadp.entity.Research
@@ -22,6 +23,12 @@ class ResearchServiceImpl(
     private val userRepository: UserRepository,
 ) : ResearchService {
 
+//    override fun showInfo(researchId: Long): Response<RDTO> {
+//        val r = researchRepository.searchById(researchId)
+//        val userid = r.researchUserId
+//        val u = userRepository.findById(userid)
+//    }
+
     override fun selectResearchByResearchId(researchId: Long): Response<ResearchDTO> {
         val r = try{
             researchRepository.searchById(researchId)
@@ -30,6 +37,16 @@ class ResearchServiceImpl(
         }
         return Response.success("查找成功", r.toDTO())
 
+    }
+
+    override fun selectResearchByUserId(userId: Long): Response<List<ResearchDTO>> {
+        val rl = try{
+            researchRepository.findByResearchUserId(userId)
+        } catch (e: NoSuchElementException) {
+            return Response.failure("未找该用户的研究")
+        }
+        if(rl.size == 0) return Response.failure("未找该用户的研究")
+        return Response.success("查找成功", rl.map{it.toDTO()})
     }
 
 

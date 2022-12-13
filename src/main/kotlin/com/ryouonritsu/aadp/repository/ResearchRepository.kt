@@ -16,6 +16,7 @@ interface ResearchRepository :JpaRepository<Research, Long> {
 
     fun searchById(researchId: Long): Research
 
+
     @Query("SELECT r FROM Research r ORDER BY r.refernum DESC")
     fun findPop(): List<Research>
 
@@ -25,6 +26,6 @@ interface ResearchRepository :JpaRepository<Research, Long> {
 //    fun findAllResearchs(): List<Research>?
     fun findByResearchField(researchField : String): Research?
 
-    fun findByResearchUserId(userId: Long): Research?
+    fun findByResearchUserId(userId: Long): List<Research>
 //    fun findRefernumMax() : Research?
 }
