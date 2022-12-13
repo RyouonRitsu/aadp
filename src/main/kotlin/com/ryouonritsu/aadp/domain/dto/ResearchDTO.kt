@@ -13,16 +13,16 @@ data class ResearchDTO(
     var refernum: String = "0",
 
     @Schema(description = "research field", required = true)
-    var researchField: String="",
+    var researchField: String = "",
 
     @Schema(description = "research title", required = true)
-    var researchTitle: String="",
+    var researchTitle: String = "",
 
     @Schema(description = "research abstract", required = true)
-    var researchAbstract: String="",
+    var researchAbstract: String = "",
 
     @Schema(description = "research content", required = true)
-    var researchContent: String="",
+    var researchContent: String = "",
 
     @Schema(description = "publish time", required = true)
     var publishTime: LocalDateTime = LocalDateTime.now(),
@@ -32,4 +32,4 @@ data class ResearchDTO(
 
     @Schema(description = "user id", example = "1")
     var userId: String? = null
-    )
+)
