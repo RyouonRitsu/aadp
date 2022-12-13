@@ -6,12 +6,8 @@ import com.ryouonritsu.aadp.service.ResearchService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.*
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
 
 
@@ -34,8 +30,9 @@ class ResearchController(
     )
 
 
-    @PostMapping("/selectResearchByResearchId")
+    @GetMapping("/selectResearchByResearchId")
     @Tag(name = "研究接口")
+    @AuthCheck
     @Operation(summary = "根据id查询研究信息")
     fun selectResearchByResearchId(
         @RequestParam("research_id") @Parameter(
@@ -45,7 +42,7 @@ class ResearchController(
     ) = researchService.selectResearchByResearchId(researchId)
 
 
-    @PostMapping("/selectResearchByResearchField")
+    @GetMapping("/selectResearchByResearchField")
     @Tag(name = "研究接口")
     @Operation(summary = "根据领域查询研究信息")
     fun selectResearchByResearchField(
@@ -57,6 +54,7 @@ class ResearchController(
 
     @PostMapping("/selectPopResearch")
     @Tag(name = "研究接口")
+    @AuthCheck
     @Operation(summary = "找到最受欢迎的研究")
     fun selectPopResearch(
     ) = researchService.selectPopResearch()
@@ -64,14 +62,15 @@ class ResearchController(
 
     @PostMapping("/selectLatestResearch")
     @Tag(name = "研究接口")
+    @AuthCheck
     @Operation(summary = "找到最新的研究")
     fun selectLatestResearch(
     ) = researchService.selectLatestResearch()
 
 
     @PostMapping("/modifyResearchTitle")
-    @AuthCheck
     @Tag(name = "研究接口")
+    @AuthCheck
     @Operation(
         summary = "修改研究标题"
     )
@@ -80,8 +79,8 @@ class ResearchController(
 
 
     @PostMapping("/modifyResearchContent")
-    @AuthCheck
     @Tag(name = "研究接口")
+    @AuthCheck
     @Operation(
         summary = "修改研究内容"
     )
@@ -91,6 +90,7 @@ class ResearchController(
 
     @PostMapping("/adjustRefernum")
     @Tag(name = "研究接口")
+    @AuthCheck
     @Operation(
         summary = "调整研究引用数",
     )

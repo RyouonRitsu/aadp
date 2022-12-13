@@ -83,16 +83,22 @@ class ResearchServiceImpl(
         val newL: kotlin.collections.List<Research>
          try {
             val researchList = researchRepository.findAll()
+             System.out.println(researchList)
              val tl = mutableListOf<Research>()
             for(l in researchList) {
-                if(l.researchField.contains(researchField)) {
+//                System.out.println(l.researchField)
+//                System.out.println(researchField)
+                if(researchField in l.researchField) {
                     tl.add(l)
+//                    System.out.println("1")
                 }
             }
              newL = tl
         } catch (e: NoSuchElementException) {
             return Response.failure("未找到研究")
         }
+        System.out.println(newL)
+        if(newL.size == 0) return Response.failure("未找到研究")
         return Response.success("查找成功", newL.map{it.toDTO()})
 
     }
@@ -121,6 +127,7 @@ class ResearchServiceImpl(
         research = researchRepository.save(research)
         return Response.success("修改成功", research.toDTO())
     }
+
     override fun modifyResearchTitle(researchId: Long, researchTitle: String): Response<ResearchDTO> {
         log.info("modifyResearchTitle researchId = $researchId, researchTitle = $researchTitle")
         var research = try {
