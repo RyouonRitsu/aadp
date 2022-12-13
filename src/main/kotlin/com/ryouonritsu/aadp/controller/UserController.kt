@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import java.util.*
 import javax.validation.Valid
 import javax.validation.constraints.Min
@@ -115,8 +116,12 @@ class UserController(
         summary = "上传文件",
         description = "将用户上传的文件保存在静态文件目录static/file/\${user_id}/\${file_name}下"
     )
-    fun uploadFile(@RequestBody request: UploadFileRequest) =
-        userService.uploadFile(request.file)
+    fun uploadFile(
+        @RequestParam @Parameter(
+            description = "文件",
+            required = true
+        ) file: MultipartFile
+    ) = userService.uploadFile(file)
 
     @PostMapping("/deleteFile")
     @AuthCheck

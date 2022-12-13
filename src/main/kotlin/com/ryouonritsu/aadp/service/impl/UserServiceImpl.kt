@@ -15,6 +15,7 @@ import com.ryouonritsu.aadp.utils.TokenUtils
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.io.File
@@ -38,7 +39,9 @@ class UserServiceImpl(
     private val redisUtils: RedisUtils,
     private val userRepository: UserRepository,
     private val userFileRepository: UserFileRepository,
-    private val institutionRepository: InstitutionRepository
+    private val institutionRepository: InstitutionRepository,
+    @Value("\${static.file.prefix}")
+    private val staticFilePrefix: String
 ) : UserService {
     companion object {
         private val log = LoggerFactory.getLogger(UserServiceImpl::class.java)
@@ -61,7 +64,7 @@ class UserServiceImpl(
     private fun sendEmail(email: String, subject: String, html: String): Boolean {
         val account = "inkbook_ritsu@163.com"
         val password = "GMIRTTQDLBMWOROX"
-        val nick = "InkBook Official"
+        val nick = "ResearchOcean Official"
         val props = mapOf(
             "mail.smtp.auth" to "true",
             "mail.smtp.host" to "smtp.163.com",
@@ -140,7 +143,7 @@ class UserServiceImpl(
         if (!result && message != null) return message
         val t = userRepository.findByEmail(email!!)
         if (t != null) return Response.failure("该邮箱已被注册")
-        val subject = if (modify) "InkBook修改邮箱验证码" else "InkBook邮箱注册验证码"
+        val subject = if (modify) "ResearchOcean修改邮箱验证码" else "ResearchOcean邮箱注册验证码"
         val verificationCode = (1..6).joinToString("") { "${(0..9).random()}" }
         return sendVerifyCodeEmailUseTemplate(
             "registration_verification",
@@ -256,7 +259,7 @@ class UserServiceImpl(
         val (result, message) = emailCheck(email)
         if (!result && message != null) return message
         userRepository.findByEmail(email!!) ?: return Response.failure("该邮箱未被注册")
-        val subject = "InkBook邮箱找回密码验证码"
+        val subject = "ResearchOcean邮箱找回密码验证码"
         val verificationCode = (1..6).joinToString("") { "${(0..9).random()}" }
         return sendVerifyCodeEmailUseTemplate(
             "forgot_password",
@@ -336,7 +339,7 @@ class UserServiceImpl(
             val filePath = "$fileDir/$fileName"
             if (!File(fileDir).exists()) File(fileDir).mkdirs()
             file.transferTo(Path(filePath))
-            val fileUrl = "http://101.42.171.88:8090/file/${userId}/${fileName}"
+            val fileUrl = "http://$staticFilePrefix:8090/file/${userId}/${fileName}"
             userFileRepository.save(
                 UserFile(
                     url = fileUrl,
@@ -428,7 +431,7 @@ class UserServiceImpl(
             val success =
                 if (code == 200 && html != null) sendEmail(
                     user.email,
-                    "InkBook邮箱修改通知",
+                    "ResearchOcean邮箱修改通知",
                     html
                 ) else false
             if (!success) throw Exception("邮件发送失败")
