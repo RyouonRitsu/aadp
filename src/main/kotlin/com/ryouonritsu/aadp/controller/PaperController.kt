@@ -1,5 +1,6 @@
 package com.ryouonritsu.aadp.controller
 
+import com.ryouonritsu.aadp.common.annotation.AuthCheck
 import com.ryouonritsu.aadp.service.PaperService
 import com.ryouonritsu.aadp.utils.RedisUtils
 import io.swagger.v3.oas.annotations.Operation
@@ -22,6 +23,7 @@ class PaperController(
     private val redisUtils: RedisUtils
 )  {
     @GetMapping("/searchPaperByKeyword")
+    @AuthCheck
     @Tag(name = "论文接口")
     @Operation(summary = "根据给出的关键词在标题中模糊查询论文")
     fun searchPaperByKeyword(

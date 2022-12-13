@@ -12,17 +12,34 @@ class Paper(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0,
+    @Column(name = "paper_title")
     var paperTitle: String,
+    @Column(name = "paper_author")
     var paperAuthor: String,
+    @Column(name = "paper_unit")
     var paperUnit: String,
+    @Column(name = "paper_date")
     var paperDate: String,
+    @Column(name = "paper_classification")
     var paperClassification: String,
+    @Column(name = "paper_cited")
     var paperCited: Int,
+    @Column(name = "paper_periodical")
     var paperPeriodical: String,
+    @Column(name = "paper_abstract", columnDefinition = "longtext")
     var paperAbstract: String,
+    @Column(name = "paper_keyword")
     var paperKeyword: String,
+    @Column(name = "paper_other_authors", columnDefinition = "longtext")
     var paperOtherAuthors: String,
+    @Column(name = "paper_other_info")
     var paperOtherInfo: String,
+    @Column(name = "paper_link")
+    var paperLink: String,
+    @Column(name = "paper_reference")
+    var paperReference: String,
+    @Column(name = "paper_click")
+    var paperClick: Long = 0,
 ) {
     fun toDict(): Map<String, Any?> = mapOf(
         "user_id" to "$id",
@@ -36,7 +53,10 @@ class Paper(
         "paperAbstract" to paperAbstract,
         "paperKeyword" to paperKeyword,
         "paperOtherAuthors" to paperOtherAuthors,
-        "paperOtherInfo" to paperOtherInfo
+        "paperOtherInfo" to paperOtherInfo,
+        "paperLink" to paperLink,
+        "paperReference" to paperReference,
+        "paperClick" to paperClick
     )
 
     fun toDTO() = PaperDTO(
@@ -51,6 +71,9 @@ class Paper(
         paperAbstract = paperAbstract,
         paperKeyword = paperKeyword,
         paperOtherAuthors = paperOtherAuthors,
-        paperOtherInfo = paperOtherInfo
+        paperOtherInfo = paperOtherInfo,
+        paperLink = paperLink,
+        paperReference = paperReference,
+        paperClick = paperClick
     )
 }

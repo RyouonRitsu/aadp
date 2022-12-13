@@ -30,5 +30,11 @@ data class PaperDTO(
     @Schema(description = "paper other authors", example = "{\"other_authors\": [{\"author\": \"杨鑫\", \"unit\": \"西北师范大学教育科学学院\"}, {\"author\": \"尚雯\", \"unit\": \"西北师范大学教育科学学院\"}]}", required = true)
     var paperOtherAuthors: String,
     @Schema(description = "paper other info", example = "...", required = true)
-    var paperOtherInfo: String
+    var paperOtherInfo: String,
+    @Schema(description = "paper link", example = "url", required = true)
+    var paperLink: String,
+    @Schema(description = "paper reference", example = "...", required = true)
+    var paperReference: String,
+    @Schema(description = "paper click", example = "23", required = true)
+    var paperClick: Long,
 )
