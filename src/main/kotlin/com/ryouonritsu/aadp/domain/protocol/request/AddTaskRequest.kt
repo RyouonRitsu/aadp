@@ -9,9 +9,6 @@ import javax.validation.constraints.NotNull
  */
 @Schema(description = "新增管理员审核任务请求")
 data class AddTaskRequest(
-    @field:NotNull(message = "Token is mandatory")
-    @Schema(description = "token", required = true)
-    val token: String?,
     @field:NotNull(message = "OperatorType is mandatory")
     @Schema(description = "对象类型，PAPER或INSTITUTION", example = "PAPER", required = true)
     val objectType: ObjectEnum?,

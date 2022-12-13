@@ -9,8 +9,6 @@ import io.swagger.v3.oas.annotations.media.Schema
 data class ChangePasswordRequest(
     @Schema(description = "修改模式, 0为忘记密码修改, 1为正常修改", required = true)
     val mode: Int?,
-    @Schema(description = "1: 用户登陆后获取的token令牌", defaultValue = "")
-    val token: String = "",
     @Schema(description = "1: 旧密码")
     val oldPassword: String?,
     @Schema(description = "新密码", required = true)

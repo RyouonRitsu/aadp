@@ -26,12 +26,11 @@ interface UserService {
         keepLogin: Boolean
     ): Response<List<Map<String, String>>>
 
-    fun showInfo(token: String): Response<List<UserDTO>>
+    fun showInfo(userId: Long): Response<List<UserDTO>>
     fun selectUserByUserId(userId: Long): Response<List<UserDTO>>
     fun sendForgotPasswordEmail(email: String?): Response<Unit>
     fun changePassword(
         mode: Int?,
-        token: String,
         oldPassword: String?,
         password1: String?,
         password2: String?,
@@ -39,11 +38,10 @@ interface UserService {
         verifyCode: String?
     ): Response<Unit>
 
-    fun uploadFile(file: MultipartFile, token: String): Response<List<Map<String, String>>>
-    fun deleteFile(token: String, url: String): Response<Unit>
+    fun uploadFile(file: MultipartFile): Response<List<Map<String, String>>>
+    fun deleteFile(url: String): Response<Unit>
     fun modifyUserInfo(request: ModifyUserInfoRequest): Response<Unit>
     fun modifyEmail(
-        token: String,
         email: String?,
         verifyCode: String?,
         password: String?

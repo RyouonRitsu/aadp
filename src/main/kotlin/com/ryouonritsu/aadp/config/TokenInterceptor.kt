@@ -5,6 +5,7 @@ import com.ryouonritsu.aadp.common.annotation.AuthCheck
 import com.ryouonritsu.aadp.common.enums.AuthEnum
 import com.ryouonritsu.aadp.common.enums.ExceptionEnum
 import com.ryouonritsu.aadp.utils.RedisUtils
+import com.ryouonritsu.aadp.utils.RequestContext
 import com.ryouonritsu.aadp.utils.TokenUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -37,7 +38,7 @@ class TokenInterceptor : HandlerInterceptor {
             return true
         }
         response.characterEncoding = "UTF-8"
-        val token = request.getParameter("token")
+        val token = request.getHeader("token")
         var message = ""
         if (!token.isNullOrBlank()) {
 //            if (TokenUtils.verify(token).first) {
@@ -48,6 +49,7 @@ class TokenInterceptor : HandlerInterceptor {
             log.info("现有的token: $token")
             if (redisUtils["$userId"] == token && result) {
                 log.info("通过拦截器")
+                RequestContext.userId.set(userId)
                 return true
             } else {
                 log.info("已经存在一个token，未通过拦截器")

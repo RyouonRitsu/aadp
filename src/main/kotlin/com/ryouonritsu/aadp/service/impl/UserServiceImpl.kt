@@ -10,6 +10,7 @@ import com.ryouonritsu.aadp.repository.UserFileRepository
 import com.ryouonritsu.aadp.repository.UserRepository
 import com.ryouonritsu.aadp.service.UserService
 import com.ryouonritsu.aadp.utils.RedisUtils
+import com.ryouonritsu.aadp.utils.RequestContext
 import com.ryouonritsu.aadp.utils.TokenUtils
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -226,13 +227,13 @@ class UserServiceImpl(
             .getOrDefault(Response.failure("登录失败, 发生意外错误"))
     }
 
-    override fun showInfo(token: String): Response<List<UserDTO>> {
+    override fun showInfo(userId: Long): Response<List<UserDTO>> {
         return runCatching {
-            val user = userRepository.findById(TokenUtils.verify(token).second).get()
+            val user = userRepository.findById(userId).get()
             Response.success("获取成功", listOf(user.toDTO()))
         }.onFailure {
             if (it is NoSuchElementException) {
-                redisUtils - "${TokenUtils.verify(token).second}"
+                redisUtils - "$userId"
                 return Response.failure("数据库中没有此用户, 此会话已失效")
             }
             log.error(it.stackTraceToString())
@@ -267,7 +268,6 @@ class UserServiceImpl(
 
     override fun changePassword(
         mode: Int?,
-        token: String,
         oldPassword: String?,
         password1: String?,
         password2: String?,
@@ -296,9 +296,8 @@ class UserServiceImpl(
             }
 
             1 -> {
-                if (token.isBlank()) return Response.failure("请先登陆")
                 return runCatching {
-                    val user = userRepository.findById(TokenUtils.verify(token).second).get()
+                    val user = userRepository.findById(RequestContext.userId.get()!!).get()
                     if (password1.isNullOrBlank() || password2.isNullOrBlank() || oldPassword.isNullOrBlank()) return Response.failure(
                         "密码不能为空"
                     )
@@ -311,7 +310,7 @@ class UserServiceImpl(
                     Response.success<Unit>("修改成功")
                 }.onFailure {
                     if (it is NoSuchElementException) {
-                        redisUtils - "${TokenUtils.verify(token).second}"
+                        redisUtils - "${RequestContext.userId.get()}"
                         return Response.failure("数据库中没有此用户或可能是token验证失败, 此会话已失效")
                     }
                     log.error(it.stackTraceToString())
@@ -325,14 +324,13 @@ class UserServiceImpl(
     }
 
     override fun uploadFile(
-        file: MultipartFile,
-        token: String
+        file: MultipartFile
     ): Response<List<Map<String, String>>> {
         return runCatching {
             if (file.size >= 10 * 1024 * 1024) return Response.failure("上传失败, 文件大小超过最大限制10MB！")
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss.SSS_")
             val time = LocalDateTime.now().format(formatter)
-            val userId = TokenUtils.verify(token).second
+            val userId = RequestContext.userId.get()
             val fileDir = "static/file/${userId}"
             val fileName = time + file.originalFilename
             val filePath = "$fileDir/$fileName"
@@ -344,7 +342,7 @@ class UserServiceImpl(
                     url = fileUrl,
                     filePath = filePath,
                     fileName = fileName,
-                    user = userRepository.findById(userId).get()
+                    user = userRepository.findById(userId!!).get()
                 )
             )
             Response.success(
@@ -358,7 +356,7 @@ class UserServiceImpl(
             .getOrDefault(Response.failure("上传失败, 发生意外错误"))
     }
 
-    override fun deleteFile(token: String, url: String): Response<Unit> {
+    override fun deleteFile(url: String): Response<Unit> {
         return try {
             val file = userFileRepository.findByUrl(url) ?: return Response.failure(
                 "文件不存在"
@@ -374,7 +372,7 @@ class UserServiceImpl(
 
     override fun modifyUserInfo(request: ModifyUserInfoRequest): Response<Unit> {
         return runCatching {
-            val user = userRepository.findById(TokenUtils.verify(request.token).second).get()
+            val user = userRepository.findById(RequestContext.userId.get()!!).get()
             if (!request.username.isNullOrBlank()) {
                 val t = userRepository.findByUsername(request.username)
                 if (t != null) return Response.failure("用户名已存在")
@@ -404,7 +402,7 @@ class UserServiceImpl(
             Response.success<Unit>("修改成功")
         }.onFailure {
             if (it is NoSuchElementException) {
-                redisUtils - "${TokenUtils.verify(request.token).second}"
+                redisUtils - "${RequestContext.userId.get()}"
                 return Response.failure("数据库中没有此用户或可能是token验证失败, 此会话已失效")
             }
             log.error(it.stackTraceToString())
@@ -412,13 +410,12 @@ class UserServiceImpl(
     }
 
     override fun modifyEmail(
-        token: String,
         email: String?,
         verifyCode: String?,
         password: String?
     ): Response<Unit> {
         return runCatching {
-            val user = userRepository.findById(TokenUtils.verify(token).second).get()
+            val user = userRepository.findById(RequestContext.userId.get()!!).get()
             val (result, message) = emailCheck(email)
             if (!result && message != null) return message
             val t = userRepository.findByEmail(email!!)
@@ -440,7 +437,7 @@ class UserServiceImpl(
             Response.success("修改成功")
         }.onFailure {
             if (it is NoSuchElementException) {
-                redisUtils - "${TokenUtils.verify(token).second}"
+                redisUtils - "${RequestContext.userId.get()}"
                 return Response.failure("数据库中没有此用户或可能是token验证失败, 此会话已失效")
             }
             if (it.message != null) return Response.failure("${it.message}")

@@ -1,12 +1,13 @@
 package com.ryouonritsu.aadp.controller
 
 import com.ryouonritsu.aadp.common.annotation.AuthCheck
+import com.ryouonritsu.aadp.common.enums.ObjectEnum
 import com.ryouonritsu.aadp.domain.protocol.request.*
 import com.ryouonritsu.aadp.domain.protocol.response.Response
 import com.ryouonritsu.aadp.service.AdminTaskService
 import com.ryouonritsu.aadp.service.UserService
 import com.ryouonritsu.aadp.utils.RedisUtils
-import com.ryouonritsu.aadp.utils.TokenUtils
+import com.ryouonritsu.aadp.utils.RequestContext
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*
 import java.util.*
 import javax.validation.Valid
 import javax.validation.constraints.Min
+import javax.validation.constraints.NotNull
 
 /**
  * @author ryouonritsu
@@ -62,12 +64,8 @@ class UserController(
     @Tag(name = "用户接口")
     @Operation(summary = "用户登出")
     fun logout(
-        @RequestParam("token") @Parameter(
-            description = "用户登陆后获取的token令牌",
-            required = true
-        ) token: String
     ): Response<Any> {
-        redisUtils - "${TokenUtils.verify(token).second}"
+        redisUtils - "${RequestContext.userId.get()}"
         return Response.success("登出成功")
     }
 
@@ -76,11 +74,7 @@ class UserController(
     @Tag(name = "用户接口")
     @Operation(summary = "返回已登陆用户的信息", description = "需要用户登陆才能查询成功")
     fun showInfo(
-        @RequestParam("token") @Parameter(
-            description = "用户登陆后获取的token令牌",
-            required = true
-        ) token: String
-    ) = userService.showInfo(token)
+    ) = userService.showInfo(RequestContext.userId.get()!!)
 
     @GetMapping("/selectUserByUserId")
     @Tag(name = "用户接口")
@@ -107,7 +101,6 @@ class UserController(
     )
     fun changePassword(@RequestBody request: ChangePasswordRequest) = userService.changePassword(
         request.mode,
-        request.token,
         request.oldPassword,
         request.password1,
         request.password2,
@@ -123,7 +116,7 @@ class UserController(
         description = "将用户上传的文件保存在静态文件目录static/file/\${user_id}/\${file_name}下"
     )
     fun uploadFile(@RequestBody request: UploadFileRequest) =
-        userService.uploadFile(request.file, request.token)
+        userService.uploadFile(request.file)
 
     @PostMapping("/deleteFile")
     @AuthCheck
@@ -133,7 +126,7 @@ class UserController(
         description = "删除用户上传的文件, 使分享链接失效"
     )
     fun deleteFile(@RequestBody request: DeleteFileRequest) =
-        userService.deleteFile(request.token, request.url)
+        userService.deleteFile(request.url)
 
     @PostMapping("/modifyUserInfo")
     @AuthCheck
@@ -153,7 +146,7 @@ class UserController(
         description = "需要进行新邮箱验证和密码验证, 新邮箱验证发送验证码使用注册验证码接口即可"
     )
     fun modifyEmail(@RequestBody request: ModifyEmailRequest) =
-        userService.modifyEmail(request.token, request.email, request.verifyCode, request.password)
+        userService.modifyEmail(request.email, request.verifyCode, request.password)
 
     @PostMapping("/adjustmentCredit")
     @Tag(name = "用户接口")
@@ -181,6 +174,10 @@ class UserController(
         description = "获取所有管理员审核任务，分页返回"
     )
     fun listAllTask(
+        @RequestParam("type") @Parameter(
+            description = "任务类型",
+            required = true
+        ) @NotNull(message = "Type is mandatory") type: ObjectEnum?,
         @RequestParam("page") @Parameter(
             description = "页码",
             required = true
@@ -189,7 +186,7 @@ class UserController(
             description = "每页数量",
             required = true
         ) @Min(1) limit: Int = 10
-    ) = Response.success(adminTaskService.listAll(page, limit))
+    ) = Response.success(adminTaskService.listAll(type!!, page, limit))
 
     @PostMapping("/batchOperation")
     @AuthCheck

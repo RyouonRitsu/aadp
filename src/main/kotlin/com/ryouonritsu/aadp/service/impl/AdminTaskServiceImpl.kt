@@ -16,7 +16,7 @@ import com.ryouonritsu.aadp.repository.PaperRepository
 import com.ryouonritsu.aadp.repository.UserRepository
 import com.ryouonritsu.aadp.service.AdminTaskService
 import com.ryouonritsu.aadp.utils.RedisUtils
-import com.ryouonritsu.aadp.utils.TokenUtils
+import com.ryouonritsu.aadp.utils.RequestContext
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
@@ -37,7 +37,7 @@ class AdminTaskServiceImpl(
     }
 
     override fun insert(request: AddTaskRequest): Response<Unit> {
-        val operator = userRepository.findById(TokenUtils.verify(request.token!!).second)
+        val operator = userRepository.findById(RequestContext.userId.get()!!)
             .orElseThrow { ServiceException(ExceptionEnum.OBJECT_DOES_NOT_EXIST) }
         adminTaskRepository.save(
             AdminTask(
@@ -49,9 +49,9 @@ class AdminTaskServiceImpl(
         return Response.success("保存成功")
     }
 
-    override fun listAll(page: Int, limit: Int): ListAllTaskResponse {
+    override fun listAll(type: ObjectEnum, page: Int, limit: Int): ListAllTaskResponse {
         val pageable = PageRequest.of(page - 1, limit)
-        val tasks = adminTaskRepository.findAll(pageable)
+        val tasks = adminTaskRepository.findAllByObjectType(type.code, pageable)
         return ListAllTaskResponse(
             tasks.content.map {
                 log.info("process task: {}", it.toJSONString())
