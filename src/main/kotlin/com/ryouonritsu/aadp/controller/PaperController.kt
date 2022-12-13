@@ -32,6 +32,7 @@ class PaperController(
         @RequestParam("keyword") @Parameter(
             description = "查询关键词",
             required = true
-        ) keyword: String
-    ) = paperService.searchPaperByKeyword(keyword)
+        ) keyword: String,
+        page: Int = 1, limit: Int = 10
+    ) = paperService.searchPaperByKeyword(keyword, page, limit)
 }

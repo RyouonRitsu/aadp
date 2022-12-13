@@ -19,6 +19,11 @@ enum class ExceptionEnum(
     REQUEST_TIMEOUT("408", "request timeout"),
     INTERNAL_SERVER_ERROR("500", "internal server error"),
     SERVICE_UNAVAILABLE("503", "service unavailable"),
-    UNEXPECTED_ERROR("10000", "意想不到的错误发生了！"),
-    UNKNOWN_ERROR("10001", "未知错误");
+    UNEXPECTED_ERROR("10000", "An unexpected error has occurred!"),
+    UNKNOWN_ERROR("10001", "unknown mistake"),
+    OBJECT_DOES_NOT_EXIST("10002", "object does not exist in the database");
+
+    companion object {
+        fun getByCode(code: String) = values().first { it.code == code }
+    }
 }

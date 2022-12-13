@@ -8,5 +8,5 @@ import com.ryouonritsu.aadp.domain.protocol.response.Response
  * @author WuKunchao
  */
 interface PaperService {
-    fun searchPaperByKeyword(keyword: String): Response<List<PaperDTO>>
+    fun searchPaperByKeyword(keyword: String, page: Int, limit: Int): Response<List<PaperDTO>>
 }
