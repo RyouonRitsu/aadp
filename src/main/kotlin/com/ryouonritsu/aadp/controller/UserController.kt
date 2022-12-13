@@ -64,8 +64,7 @@ class UserController(
     @AuthCheck
     @Tag(name = "用户接口")
     @Operation(summary = "用户登出")
-    fun logout(
-    ): Response<Any> {
+    fun logout(): Response<Any> {
         redisUtils - "${RequestContext.userId.get()}"
         return Response.success("登出成功")
     }
@@ -74,8 +73,7 @@ class UserController(
     @AuthCheck
     @Tag(name = "用户接口")
     @Operation(summary = "返回已登陆用户的信息", description = "需要用户登陆才能查询成功")
-    fun showInfo(
-    ) = userService.showInfo(RequestContext.userId.get()!!)
+    fun showInfo() = userService.showInfo(RequestContext.userId.get()!!)
 
     @GetMapping("/selectUserByUserId")
     @Tag(name = "用户接口")
@@ -130,8 +128,7 @@ class UserController(
         summary = "删除文件",
         description = "删除用户上传的文件, 使分享链接失效"
     )
-    fun deleteFile(@RequestBody request: DeleteFileRequest) =
-        userService.deleteFile(request.url)
+    fun deleteFile(@RequestBody request: DeleteFileRequest) = userService.deleteFile(request.url)
 
     @PostMapping("/modifyUserInfo")
     @AuthCheck

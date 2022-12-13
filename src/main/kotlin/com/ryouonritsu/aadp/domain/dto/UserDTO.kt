@@ -1,5 +1,6 @@
 package com.ryouonritsu.aadp.domain.dto
 
+import com.ryouonritsu.aadp.common.constants.AADPConstant
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
@@ -31,5 +32,7 @@ data class UserDTO(
     @Schema(description = "是否管理员", example = "false", required = true)
     var isAdmin: Boolean = false,
     @Schema(description = "institution id", example = "1")
-    var institutionId: String? = null
+    var institutionId: String = "${AADPConstant.INT_MINUS_1}",
+    @Schema(description = "institution name", example = "institution name")
+    var institutionName: String = AADPConstant.EMPTY_STR
 )
