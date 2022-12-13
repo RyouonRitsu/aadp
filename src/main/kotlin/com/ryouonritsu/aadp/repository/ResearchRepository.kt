@@ -22,9 +22,9 @@ interface ResearchRepository :JpaRepository<Research, Long> {
     @Query("SELECT r FROM Research r ORDER BY r.publishTime DESC")
     fun findLatest(): List<Research>
 
-    fun findAllResearchs(): List<Research>?
+//    fun findAllResearchs(): List<Research>?
     fun findByResearchField(researchField : String): Research?
 
-    fun findByUserId(userId: Long): Research?
+    fun findByResearchUserId(userId: Long): Research?
 //    fun findRefernumMax() : Research?
 }
