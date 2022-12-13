@@ -5,11 +5,16 @@ import com.ryouonritsu.aadp.entity.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
+import java.util.*
 
 
 @Repository
 interface ResearchRepository :JpaRepository<Research, Long> {
     fun findByResearchTitle(researchTitle : String): Research?
+
+//    override fun findById(researchId: Long): Optional<Research>
+
+    fun searchById(researchId: Long): Research
 
     @Query("SELECT r FROM Research r ORDER BY r.refernum DESC")
     fun findPop(): List<Research>

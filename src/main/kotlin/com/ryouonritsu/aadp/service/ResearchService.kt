@@ -5,15 +5,16 @@ import com.ryouonritsu.aadp.domain.protocol.request.ModifyUserInfoRequest
 import com.ryouonritsu.aadp.domain.protocol.response.Response
 
 interface ResearchService {
+
     fun createResearch(
-        researchTitle: String?,
-        researchAbstract: String?,
-        researchContent:String?,
-        researchField:String?,
+        researchTitle: String,
+        researchAbstract: String,
+        researchContent:String,
+        researchField:String,
         researchUserId: Long
     ):Response<Unit>
 
-    fun selectResearchByResearchId(researchId: Long): Response<List<ResearchDTO>>
+    fun selectResearchByResearchId(researchId: Long): Response<ResearchDTO>
 
     fun selectResearchByResearchField(researchField: String):Response<List<ResearchDTO>>
 
@@ -25,5 +26,5 @@ interface ResearchService {
 
     fun adjustRefernum(researchId: Long, num: Int): Response<ResearchDTO>
 
-    fun selectResearchField(researchField: String):Response<ResearchDTO>
+//    fun selectResearchField(researchField: String):Response<ResearchDTO>
 }
