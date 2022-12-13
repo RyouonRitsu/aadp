@@ -96,6 +96,7 @@ class AdminTaskServiceImpl(
                         val institution = institutionRepository.findById(it.objectId)
                             .orElseThrow { ServiceException(ExceptionEnum.OBJECT_DOES_NOT_EXIST) }
                         it.operator.institution = institution
+                        it.operator.isCertified = true
                         userRepository.save(it.operator)
                     }
 

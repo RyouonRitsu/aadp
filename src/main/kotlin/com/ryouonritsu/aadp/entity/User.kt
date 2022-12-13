@@ -1,5 +1,6 @@
 package com.ryouonritsu.aadp.entity
 
+import com.ryouonritsu.aadp.common.constants.AADPConstant
 import com.ryouonritsu.aadp.domain.dto.UserDTO
 import java.time.LocalDateTime
 import javax.persistence.*
@@ -43,6 +44,7 @@ class User(
         isCertified = isCertified,
         educationalBackground = educationalBackground,
         isAdmin = isAdmin,
-        institutionId = "${institution?.id}"
+        institutionId = "${institution?.id ?: AADPConstant.INT_MINUS_1}",
+        institutionName = institution?.institutionName ?: AADPConstant.EMPTY_STR
     )
 }

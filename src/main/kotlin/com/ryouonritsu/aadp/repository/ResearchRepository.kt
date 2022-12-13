@@ -1,16 +1,17 @@
 package com.ryouonritsu.aadp.repository
 
 import com.ryouonritsu.aadp.entity.Research
-import com.ryouonritsu.aadp.entity.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import java.util.*
 
-
+/**
+ * @author wzm
+ */
 @Repository
-interface ResearchRepository :JpaRepository<Research, Long> {
-    fun findByResearchTitle(researchTitle : String): Research?
+interface ResearchRepository : JpaRepository<Research, Long> {
+    fun findByResearchTitle(researchTitle: String): Research?
 
 //    override fun findById(researchId: Long): Optional<Research>
 
@@ -23,8 +24,8 @@ interface ResearchRepository :JpaRepository<Research, Long> {
     @Query("SELECT r FROM Research r ORDER BY r.publishTime DESC")
     fun findLatest(): List<Research>
 
-//    fun findAllResearchs(): List<Research>?
-    fun findByResearchField(researchField : String): Research?
+    //    fun findAllResearchs(): List<Research>?
+    fun findByResearchField(researchField: String): Research?
 
     fun findByResearchUserId(userId: Long): List<Research>
 //    fun findRefernumMax() : Research?

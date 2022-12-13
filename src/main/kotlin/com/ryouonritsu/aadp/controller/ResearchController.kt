@@ -22,7 +22,7 @@ class ResearchController(
     @Tag(name = "研究接口")
     fun createResearch(
         @RequestBody request: CreateRequest
-    )= researchService.createResearch(
+    ) = researchService.createResearch(
         request.researchTitle,
         request.researchAbstract,
         request.researchContent,
@@ -91,7 +91,7 @@ class ResearchController(
         summary = "修改研究标题"
     )
     fun modifyResearchTitle(@RequestBody request: ModifyResearchTitleRequest) =
-        researchService.modifyResearchTitle(request.researchId!!,request.researchTitle!!)
+        researchService.modifyResearchTitle(request.researchId!!, request.researchTitle!!)
 
 
     @PostMapping("/modifyResearchContent")
@@ -101,7 +101,7 @@ class ResearchController(
         summary = "修改研究内容"
     )
     fun modifyResearchContent(@RequestBody request: ModifyResearchContentRequest) =
-        researchService.modifyResearchContent(request.researchId!!,request.researchContent!!)
+        researchService.modifyResearchContent(request.researchId!!, request.researchContent!!)
 
 
     @PostMapping("/adjustRefernum")
