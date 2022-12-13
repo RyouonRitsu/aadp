@@ -10,6 +10,6 @@ import org.springframework.data.jpa.repository.Query
  * @author ryouonritsu
  */
 interface AdminTaskRepository : JpaRepository<AdminTask, Long> {
-    @Query("SELECT a FROM AdminTask a WHERE a.isDeleted = false")
-    override fun findAll(pageable: Pageable): Page<AdminTask>
+    @Query("SELECT a FROM AdminTask a WHERE a.objectType = ?1 AND a.isDeleted = false")
+    fun findAllByObjectType(objectType: Int, pageable: Pageable): Page<AdminTask>
 }
