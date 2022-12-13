@@ -35,6 +35,30 @@ class ResearchController(
     ) = researchService.selectResearchByResearchId(researchId)
 
 
+    @PostMapping("/selectResearchByResearchField")
+    @Tag(name = "研究接口")
+    @Operation(summary = "根据领域查询研究信息")
+    fun selectResearchByResearchField(
+        @RequestParam("research_field") @Parameter(
+            description = "研究领域",
+            required = true
+        ) researchField: String
+    ) = researchService.selectResearchByResearchField(researchField)
+
+    @PostMapping("/selectPopResearch")
+    @Tag(name = "研究接口")
+    @Operation(summary = "找到最受欢迎的研究")
+    fun selectPopResearch(
+    ) = researchService.selectPopResearch()
+
+
+    @PostMapping("/selectLatestResearch")
+    @Tag(name = "研究接口")
+    @Operation(summary = "找到最新的研究")
+    fun selectLatestResearch(
+    ) = researchService.selectLatestResearch()
+
+
     @PostMapping("/modifyResearchTitle")
     @AuthCheck
     @Tag(name = "研究接口")

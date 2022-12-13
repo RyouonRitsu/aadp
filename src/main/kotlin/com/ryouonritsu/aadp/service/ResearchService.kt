@@ -8,10 +8,15 @@ interface ResearchService {
 
     fun selectResearchByResearchId(researchId: Long): Response<List<ResearchDTO>>
 
+    fun selectResearchByResearchField(researchField: String):Response<List<ResearchDTO>>
+
+    fun selectPopResearch(): Response<List<ResearchDTO>>
+    fun selectLatestResearch(): Response<List<ResearchDTO>>
+
     fun modifyResearchContent(researchId: Long, researchContent: String): Response<ResearchDTO>
     fun modifyResearchTitle(researchId: Long, researchTitle: String): Response<ResearchDTO>
 
     fun adjustRefernum(researchId: Long, num: Int): Response<ResearchDTO>
 
-    fun selectResearchField(researchField: String):
+    fun selectResearchField(researchField: String):Response<ResearchDTO>
 }
