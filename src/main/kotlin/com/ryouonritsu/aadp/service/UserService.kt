@@ -7,6 +7,7 @@ import com.ryouonritsu.aadp.domain.protocol.response.AcademicInformationResponse
 import com.ryouonritsu.aadp.domain.protocol.response.QueryPapersResponse
 import com.ryouonritsu.aadp.domain.protocol.response.QueryResearchesResponse
 import com.ryouonritsu.aadp.domain.protocol.response.Response
+import com.ryouonritsu.aadp.entity.User
 import org.springframework.web.multipart.MultipartFile
 
 /**
@@ -56,4 +57,6 @@ interface UserService {
     fun queryPapers(userId: Long, page: Int, limit: Int): QueryPapersResponse
     fun queryResearches(userId: Long, page: Int, limit: Int): QueryResearchesResponse
     fun queryCooperators(userId: Long): List<QueryCooperatorsResultDTO>
+
+    fun claim(institutionName: String, user: Long): Int
 }

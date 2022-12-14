@@ -81,6 +81,17 @@ class ResearchController(
     fun selectPopResearch(
     ) = researchService.selectPopResearch()
 
+    @GetMapping("/selectFPopResearch")
+    @Tag(name = "研究接口")
+    @AuthCheck
+    @Operation(summary = "找到领域最受欢迎的研究")
+    fun selectFPopResearch(
+        @RequestParam("research_field") @Parameter(
+        description = "领域",
+        required = true
+    ) researchField: String
+    ) = researchService.selectFPopResearch(researchField)
+
 
     @PostMapping("/selectLatestResearch")
     @Tag(name = "研究接口")
@@ -88,6 +99,17 @@ class ResearchController(
     @Operation(summary = "找到最新的研究")
     fun selectLatestResearch(
     ) = researchService.selectLatestResearch()
+
+    @GetMapping("/selectFLatestResearch")
+    @Tag(name = "研究接口")
+    @AuthCheck
+    @Operation(summary = "找到领域最新的研究")
+    fun selectFLatestResearch(
+        @RequestParam("research_field") @Parameter(
+            description = "领域",
+            required = true
+        ) researchField: String
+    ) = researchService.selectFLatestResearch(researchField)
 
 
     @PostMapping("/modifyResearchTitle")
