@@ -16,6 +16,9 @@ interface UserRepository : JpaRepository<User, Long> {
     fun findByUsername(username: String): User?
     fun findByEmail(email: String): User?
 
-    @Query("SELECT u FROM User u WHERE u.username LIKE %?1%")
-    fun findByUsernameLike(username: String, pageable: Pageable = PageRequest.of(0, 1)): Page<User>
+    @Query("SELECT u FROM User u WHERE u.username LIKE %?1% OR u.realName LIKE %?1%")
+    fun findByUsernameOrRealNameLike(
+        username: String,
+        pageable: Pageable = PageRequest.of(0, 1)
+    ): Page<User>
 }

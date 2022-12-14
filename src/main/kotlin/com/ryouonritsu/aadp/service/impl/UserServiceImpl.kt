@@ -505,7 +505,7 @@ class UserServiceImpl(
         }
         return cooperatorMap.toList().sortedByDescending { it.second }
             .map {
-                val user = userRepository.findByUsernameLike(it.first.author)
+                val user = userRepository.findByUsernameOrRealNameLike(it.first.author)
                 val institution = institutionRepository.findByInstitutionNameLike(it.first.unit)
                 QueryCooperatorsResultDTO(
                     SimpleUserDTO(

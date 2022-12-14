@@ -69,7 +69,7 @@ class CommentServiceImpl(
         limit: Int
     ): Response<CommentResponse> {
         val pageable = PageRequest.of(page - 1, limit, Sort.Direction.DESC, "modifyTime")
-        val comments = commentRepository.findByPaperId(objectId, objectType.code, pageable)
+        val comments = commentRepository.findByObjectId(objectId, objectType.code, pageable)
         return Response.success(
             CommentResponse(
                 comments.content.map {

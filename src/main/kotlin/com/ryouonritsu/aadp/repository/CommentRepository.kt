@@ -16,5 +16,5 @@ interface CommentRepository : JpaRepository<Comment, Long> {
     fun findByAuthorId(authorId: Long, objectType: Int, pageable: Pageable): Page<Comment>
 
     @Query("SELECT c FROM Comment c WHERE c.objectId = ?1 AND c.objectType = ?2 AND c.isDeleted = false")
-    fun findByPaperId(objectId: Long, objectType: Int, pageable: Pageable): Page<Comment>
+    fun findByObjectId(objectId: Long, objectType: Int, pageable: Pageable): Page<Comment>
 }

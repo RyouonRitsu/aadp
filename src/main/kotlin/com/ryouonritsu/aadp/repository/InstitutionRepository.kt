@@ -33,21 +33,18 @@ interface InstitutionRepository : JpaRepository<Institution, Long> {
         pageable: Pageable = PageRequest.of(0, 1)
     ): Page<Institution>
 
-
     @Query("SELECT COUNT(x) FROM User x WHERE x.institution.id = ?1")
     fun findMemberNum(institutionId: Long): Long
 
     @Query("SELECT COUNT(p) FROM Paper p, User u WHERE p.paperAuthorId = u.id and u.institution.id = ?1")
-    fun findPaperNum(InstitutionId: Long): Long
+    fun findPaperNum(institutionId: Long): Long
 
     @Query("SELECT COUNT(p.paperCited) FROM Paper p, User u WHERE p.paperAuthorId = u.id and u.institution.id = ?1")
-    fun findCitedNum(InstitutionId: Long): Long
+    fun findCitedNum(institutionId: Long): Long
 
-
-    @Query("SELECT p FROM Paper p , User u WHERE p.paperAuthorId = u.id and u.institution.id= ?1 ORDER BY p.paperCited DESC")
-    fun findPaper(InstitutionId: Long): List<Paper>
+    @Query("SELECT p FROM Paper p, User u WHERE p.paperAuthorId = u.id and u.institution.id= ?1 ORDER BY p.paperCited DESC")
+    fun findPaper(institutionId: Long): List<Paper>
 
     @Query("SELECT u FROM User u WHERE u.institution.id = ?1")
-    fun findMember(InstitutionId: Long): List<User>
-
+    fun findMember(institutionId: Long): List<User>
 }
