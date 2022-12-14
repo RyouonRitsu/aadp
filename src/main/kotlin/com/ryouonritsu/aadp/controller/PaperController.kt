@@ -43,8 +43,12 @@ class PaperController(
         @RequestParam("limit", required = false, defaultValue = "10")
         @Parameter(
             description = "每页数据条数，默认为10"
-        ) limit: Int
-    ) = paperService.searchPaperByKeyword(keyword, subject, year, page, limit)
+        ) limit: Int,
+        @RequestParam("citedSort", required = false, defaultValue = "false")
+        @Parameter(
+            description = "是否按引用降序排序，默认为否"
+        ) citedSort: Boolean
+    ) = paperService.searchPaperByKeyword(keyword, subject, year, page, limit, citedSort)
 
     @GetMapping("/searchPaperResultInfoByKeyword")
     @AuthCheck

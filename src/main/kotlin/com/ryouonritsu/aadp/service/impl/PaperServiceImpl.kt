@@ -31,17 +31,26 @@ class PaperServiceImpl(
         subject: String?,
         year: String?,
         page: Int,
-        limit: Int
+        limit: Int,
+        citedSort: Boolean
     ): Response<List<PaperDTO>> {
         return runCatching {
             val pageable = PageRequest.of(page - 1, limit)
             val paperDTOs = arrayListOf<PaperDTO>()
-            var papers: Page<Paper>
+            val papers: Page<Paper>
             if (subject.isNullOrBlank()) {
-                if (year.isNullOrBlank()) {
-                    papers = paperRepository.findPapersByPaperTitleLike("%$keyword%", pageable)
+                papers = if (year.isNullOrBlank()) {
+                    if (citedSort) {
+                        paperRepository.findPapersByPaperTitleLikeOrderByPaperCitedDesc("%$keyword%", pageable)
+                    } else {
+                        paperRepository.findPapersByPaperTitleLike("%$keyword%", pageable)
+                    }
                 } else {
-                    papers = paperRepository.findPapersByTitleAndYearLike(keyword, year, pageable)
+                    if (citedSort) {
+                        paperRepository.findPapersByTitleAndYearLikeOrderByCitedDesc(keyword, year, pageable)
+                    } else {
+                        paperRepository.findPapersByTitleAndYearLike(keyword, year, pageable)
+                    }
                 }
                 papers.content.forEach {
                     paperDTOs.add(it.toDTO())
@@ -49,10 +58,18 @@ class PaperServiceImpl(
             } else {
                 val uSubject = subject.toCharArray()
                     .joinToString(separator = "", truncated = "") { "\\\\u${toHexString(it.code)}" }
-                if (year.isNullOrBlank()) {
-                    papers = paperRepository.findPapersByTitleAndSubLike(keyword, uSubject, pageable)
+                papers = if (year.isNullOrBlank()) {
+                    if (citedSort) {
+                        paperRepository.findPapersByTitleAndSubLikeOrderByCitedDesc(keyword, uSubject, pageable)
+                    } else {
+                        paperRepository.findPapersByTitleAndSubLike(keyword, uSubject, pageable)
+                    }
                 } else {
-                    papers = paperRepository.findPapersByTitleAndSubAndYearLike(keyword, uSubject, year, pageable)
+                    if (citedSort) {
+                        paperRepository.findPapersByTitleAndSubAndYearLikeOrderByCitedDesc(keyword, uSubject, year, pageable)
+                    } else {
+                        paperRepository.findPapersByTitleAndSubAndYearLike(keyword, uSubject, year, pageable)
+                    }
                 }
                 papers.content.forEach {
                     paperDTOs.add(it.toDTO())
@@ -69,7 +86,7 @@ class PaperServiceImpl(
     override fun searchPaperByKeyword(keyword: String, subject: String?, year: String?): Response<PaperResultInfoDTO> {
         return runCatching {
             val subs = arrayListOf<String>()
-            var papers: List<Paper>
+            val papers: List<Paper>
             if (subject.isNullOrBlank()) {
                 if (year.isNullOrBlank()) {
                     papers = paperRepository.findPapersByPaperTitleLike("%$keyword%")

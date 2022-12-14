@@ -9,7 +9,14 @@ import com.ryouonritsu.aadp.domain.protocol.response.Response
  * @author WuKunchao
  */
 interface PaperService {
-    fun searchPaperByKeyword(keyword: String, subject: String?, year: String?, page: Int, limit: Int): Response<List<PaperDTO>>
+    fun searchPaperByKeyword(
+        keyword: String,
+        subject: String?,
+        year: String?,
+        page: Int,
+        limit: Int,
+        citedSort: Boolean
+    ): Response<List<PaperDTO>>
 
     fun searchPaperByKeyword(keyword: String, subject: String?, year: String?): Response<PaperResultInfoDTO>
 
