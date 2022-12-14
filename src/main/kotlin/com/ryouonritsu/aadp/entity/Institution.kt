@@ -15,14 +15,17 @@ class Institution(
     var institutionName: String,
     @Column(name = "institution_info")
     var institutionInfo: String,
+    @Column(name = "institution_image")
+    var institutionImage: String,
     @OneToOne(targetEntity = User::class)
     @JoinColumn(name = "creator_id", referencedColumnName = "id")
-    var creator: User
+    var institutionCreator: User
 ) {
     fun toDTO() = InstitutionDTO(
         id = "$id",
         institutionName = institutionName,
         institutionInfo = institutionInfo,
-        creatorId = "${creator.id}"
+        institutionImage = institutionImage,
+        creatorId = "${institutionCreator.id}"
     )
 }

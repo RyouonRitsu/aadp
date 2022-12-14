@@ -9,8 +9,8 @@ import javax.validation.constraints.NotNull
 @Schema(description = "批量操作任务请求")
 data class TaskBatchOperationRequest(
     @Schema(
-        description = "任务ID列表，逗号连接的字符串，形如1,2,3",
-        example = "1,2,3",
+        description = "任务ID列表，[\"1\",\"2\",\"3\"]",
+        example = "[\"1\",\"2\",\"3\"]",
         required = true
     )
     val taskIds: List<Long>,

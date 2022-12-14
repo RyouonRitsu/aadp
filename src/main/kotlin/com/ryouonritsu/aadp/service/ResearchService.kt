@@ -26,7 +26,7 @@ interface ResearchService {
     fun modifyResearchContent(researchId: Long, researchContent: String): Response<ResearchDTO>
     fun modifyResearchTitle(researchId: Long, researchTitle: String): Response<ResearchDTO>
 
-    fun adjustRefernum(researchId: Long, num: Int): Response<ResearchDTO>
+    fun adjustRefernum(researchId: Long, num: Int, userId: Long): Response<ResearchDTO>
 
 //    fun selectResearchField(researchField: String):Response<ResearchDTO>
 }
