@@ -34,6 +34,8 @@ class Research(
     @Column(name = "update_time")
     var updateTime: LocalDateTime = LocalDateTime.now(),
 
+//    var userName: String
+
 //    @OneToOne(targetEntity = User::class)
 //    @JoinColumn(name = "user_id", referencedColumnName = "id")
 ////    var userList: List<User>? = null
@@ -48,6 +50,7 @@ class Research(
         researchContent = researchContent,
         publishTime = publishTime,
         updateTime = updateTime,
-        userId = "$researchUserId"
+        userId = "$researchUserId",
+//        userName = userName
     )
 }

@@ -31,5 +31,12 @@ data class ResearchDTO(
     var updateTime: LocalDateTime = LocalDateTime.now(),
 
     @Schema(description = "user id", example = "1")
-    var userId: String? = null
+    var userId: String? = null,
+
+//    @Schema(description = "user name", example = "lihua")
+//    var userName: String? = null,
+
+
+//    @Schema(description = "user name")
+//    var userN
 )

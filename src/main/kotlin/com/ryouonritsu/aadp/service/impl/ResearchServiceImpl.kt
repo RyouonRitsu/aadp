@@ -8,6 +8,7 @@ import com.ryouonritsu.aadp.repository.UserRepository
 import com.ryouonritsu.aadp.service.ResearchService
 import com.ryouonritsu.aadp.utils.RedisUtils.Companion.log
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class ResearchServiceImpl(
@@ -63,6 +64,8 @@ class ResearchServiceImpl(
         return Response.success("创建成功")
 
     }
+
+
 
     override fun selectPopResearch(): Response<List<ResearchDTO>> {
         log.info("查找最受欢迎研究")
@@ -128,7 +131,7 @@ class ResearchServiceImpl(
         } catch (e: NoSuchElementException) {
             return Response.failure("未找到此研究")
         }
-        research.refernum = num
+        research.refernum += num
         research = researchRepository.save(research)
         return Response.success("修改成功", research.toDTO())
     }
