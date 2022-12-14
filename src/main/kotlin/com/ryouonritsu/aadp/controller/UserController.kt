@@ -1,5 +1,4 @@
 package com.ryouonritsu.aadp.controller
-
 import com.ryouonritsu.aadp.common.annotation.AuthCheck
 import com.ryouonritsu.aadp.common.enums.ObjectEnum
 import com.ryouonritsu.aadp.domain.protocol.request.*

@@ -62,6 +62,10 @@ class InstitutionServiceImpl (
         return institutionRepository.findCitedNum(institutionId)
     }
 
+    override fun showAcademicInfo(institutionId: Long): Map<String, Long> {
+        return mapOf("PaperNum" to showPaperNum(institutionId), "CitedNum" to showCitedNum(institutionId))
+    }
+
     override fun showPaper(institutionId: Long): Response<List<PaperDTO>> {
         log.info("查询机构下所属论文")
         var paperList = institutionRepository.findPaper(institutionId)
