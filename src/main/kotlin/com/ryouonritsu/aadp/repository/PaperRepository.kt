@@ -22,7 +22,7 @@ interface PaperRepository : JpaRepository<Paper, Long> {
         pageable: Pageable
     ): Page<Paper>
 
-    @Query("SELECT p FROM Paper p WHERE p.paperTitle LIKE %?1% AND p.paperOtherInfo LIKE %?2%")
+    @Query("SELECT p FROM Paper p WHERE p.paperTitle LIKE %?1% AND p.paperDate LIKE %?2%")
     fun findPapersByTitleAndYearLike(
         keyword: String,
         year: String,
