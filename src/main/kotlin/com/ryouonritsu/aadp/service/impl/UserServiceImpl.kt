@@ -10,6 +10,7 @@ import com.ryouonritsu.aadp.domain.protocol.response.AcademicInformationResponse
 import com.ryouonritsu.aadp.domain.protocol.response.QueryPapersResponse
 import com.ryouonritsu.aadp.domain.protocol.response.QueryResearchesResponse
 import com.ryouonritsu.aadp.domain.protocol.response.Response
+import com.ryouonritsu.aadp.entity.Institution
 import com.ryouonritsu.aadp.entity.User
 import com.ryouonritsu.aadp.entity.UserFile
 import com.ryouonritsu.aadp.repository.*
@@ -37,6 +38,7 @@ import javax.mail.Transport
 import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeMessage
 import kotlin.io.path.Path
+import kotlin.reflect.jvm.internal.impl.load.java.JavaClassesTracker.Default
 
 /**
  * @author ryouonritsu
@@ -515,5 +517,26 @@ class UserServiceImpl(
                     ), "${it.second}"
                 )
             }
+    }
+
+    override fun claim(institutionName: String, user: Long): Int {
+        log.info("个人认领机构")
+        var u = userRepository.findById(user).get()
+        var r = institutionRepository.findByInstitutionName(institutionName).elementAtOrNull(0)
+        if(r != null){
+            r.institutionCreator = u
+            //直接认领吧
+            return 1
+        }else{
+            institutionRepository.save(
+                Institution(
+                    institutionName = institutionName,
+                    institutionCreator = u,
+                    institutionImage = "",
+                    institutionInfo = ""
+                )
+            )
+        }
+        return 0
     }
 }

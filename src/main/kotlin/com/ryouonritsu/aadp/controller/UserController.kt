@@ -279,4 +279,12 @@ class UserController(
         @RequestParam("userId") @Parameter(description = "用户id, 为空则获取当前用户的学术信息")
         userId: Long?
     ) = Response.success(userService.queryCooperators(userId ?: RequestContext.userId.get()!!))
+
+    @PostMapping("/claim")
+    @Tag(name = "用户接口")
+    @Operation(
+        summary = "用户认领机构"
+    )
+    fun claim( @RequestBody request: ClaimRequest ) =
+        userService.claim(request.institutionName, request.userId)
 }
