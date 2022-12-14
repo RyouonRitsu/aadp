@@ -31,20 +31,20 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(value = [NullPointerException::class])
     fun exceptionHandler(exception: NullPointerException): Response<Unit> {
-        log.error("NullPointerException occurred: $exception")
+        log.error("NullPointerException occurred: ${exception.stackTraceToString()}")
         return Response.failure(exception.toString())
     }
 
     @ExceptionHandler(value = [MethodArgumentNotValidException::class])
     fun exceptionHandler(exception: MethodArgumentNotValidException): Response<Map<String, String?>> {
-        log.error("MethodArgumentNotValidException occurred: $exception")
+        log.error("MethodArgumentNotValidException occurred: ${exception.stackTraceToString()}")
         return Response.failure(ExceptionEnum.BAD_REQUEST, exception.message,
             exception.bindingResult.allErrors.associate { (it as FieldError).field to it.defaultMessage })
     }
 
     @ExceptionHandler(value = [Exception::class])
     fun exceptionHandler(exception: Exception): Response<Unit> {
-        log.error("UnknownError occurred: $exception")
+        log.error("UnknownError occurred: ${exception.stackTraceToString()}")
         return Response.failure(ExceptionEnum.INTERNAL_SERVER_ERROR, exception.toString())
     }
 }
