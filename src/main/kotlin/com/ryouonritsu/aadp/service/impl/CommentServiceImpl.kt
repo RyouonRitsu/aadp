@@ -2,6 +2,7 @@ package com.ryouonritsu.aadp.service.impl
 
 import com.ryouonritsu.aadp.common.constants.AADPConstant
 import com.ryouonritsu.aadp.common.enums.ExceptionEnum
+import com.ryouonritsu.aadp.common.enums.ObjectEnum
 import com.ryouonritsu.aadp.common.exception.ServiceException
 import com.ryouonritsu.aadp.domain.protocol.response.CommentResponse
 import com.ryouonritsu.aadp.domain.protocol.response.CommentResultDTO
@@ -61,14 +62,19 @@ class CommentServiceImpl(
         return Response.success()
     }
 
-    override fun queryByPaperId(paperId: Long, page: Int, limit: Int): Response<CommentResponse> {
+    override fun queryByObjectId(
+        objectId: Long,
+        objectType: ObjectEnum,
+        page: Int,
+        limit: Int
+    ): Response<CommentResponse> {
         val pageable = PageRequest.of(page - 1, limit, Sort.Direction.DESC, "modifyTime")
-        val comments = commentRepository.findByPaperId(paperId, pageable)
+        val comments = commentRepository.findByPaperId(objectId, objectType.code, pageable)
         return Response.success(
             CommentResponse(
                 comments.content.map {
                     CommentResultDTO(
-                        it,
+                        it.toDTO(),
                         userRepository.findById(it.authorId)
                             .orElseThrow { ServiceException(ExceptionEnum.OBJECT_DOES_NOT_EXIST) }
                             .toDTO()
@@ -79,14 +85,19 @@ class CommentServiceImpl(
         )
     }
 
-    override fun queryByAuthorId(authorId: Long, page: Int, limit: Int): Response<CommentResponse> {
+    override fun queryByAuthorId(
+        authorId: Long,
+        objectType: ObjectEnum,
+        page: Int,
+        limit: Int
+    ): Response<CommentResponse> {
         val pageable = PageRequest.of(page - 1, limit, Sort.Direction.DESC, "modifyTime")
-        val comments = commentRepository.findByAuthorId(authorId, pageable)
+        val comments = commentRepository.findByAuthorId(authorId, objectType.code, pageable)
         return Response.success(
             CommentResponse(
                 comments.content.map {
                     CommentResultDTO(
-                        it,
+                        it.toDTO(),
                         userRepository.findById(it.authorId)
                             .orElseThrow { ServiceException(ExceptionEnum.OBJECT_DOES_NOT_EXIST) }
                             .toDTO()

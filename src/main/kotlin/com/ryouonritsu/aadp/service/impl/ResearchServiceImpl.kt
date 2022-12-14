@@ -159,12 +159,12 @@ class ResearchServiceImpl(
         val list = research.doneids.split("+")
         val str = userId.toString()
 
-        if(str in list){
+        if (str in list) {
             return Response.failure("不能重复点赞")
         }
 
         research.refernum += num
-        research.doneids +=  "+" + str
+        research.doneids += "+" + str
         research = researchRepository.save(research)
         return Response.success("修改成功", research.toDTO())
     }

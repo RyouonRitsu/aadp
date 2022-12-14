@@ -1,6 +1,8 @@
 package com.ryouonritsu.aadp.controller
 
 import com.ryouonritsu.aadp.common.annotation.AuthCheck
+import com.ryouonritsu.aadp.common.enums.ObjectEnum
+import com.ryouonritsu.aadp.domain.dto.CommentDTO
 import com.ryouonritsu.aadp.domain.protocol.request.SimpleCommentRequest
 import com.ryouonritsu.aadp.entity.Comment
 import com.ryouonritsu.aadp.service.CommentService
@@ -25,7 +27,8 @@ class CommentController(
     @AuthCheck
     @Tag(name = "评论接口")
     @Operation(summary = "保存评论", description = "id留空是新增评论，否则是修改评论，置空不变")
-    fun save(@Validated @RequestBody request: Comment) = commentService.save(request)
+    fun save(@Validated @RequestBody request: CommentDTO) =
+        commentService.save(Comment.from(request))
 
     @PostMapping("/delete")
     @AuthCheck
@@ -34,15 +37,19 @@ class CommentController(
     fun delete(@Valid @RequestBody request: SimpleCommentRequest) =
         commentService.delete(request.commentId!!)
 
-    @GetMapping("/queryByPaperId")
+    @GetMapping("/queryByObjectId")
     @AuthCheck
     @Tag(name = "评论接口")
     @Operation(summary = "根据论文id查询评论", description = "根据论文id查询评论")
-    fun queryByPaperId(
-        @RequestParam("paperId") @Parameter(
-            description = "论文id",
+    fun queryByObjectId(
+        @RequestParam("objectId") @Parameter(
+            description = "Object Id",
             required = true
-        ) paperId: Long,
+        ) objectId: Long,
+        @RequestParam("objectType") @Parameter(
+            description = "页码",
+            required = true
+        ) objectType: ObjectEnum,
         @RequestParam("page") @Parameter(
             description = "页码",
             required = true
@@ -51,7 +58,7 @@ class CommentController(
             description = "每页数量",
             required = true
         ) @Min(1) limit: Int
-    ) = commentService.queryByPaperId(paperId, page, limit)
+    ) = commentService.queryByObjectId(objectId, objectType, page, limit)
 
     @GetMapping("/queryByAuthorId")
     @AuthCheck
@@ -62,6 +69,10 @@ class CommentController(
             description = "作者id",
             required = true
         ) authorId: Long,
+        @RequestParam("objectType") @Parameter(
+            description = "页码",
+            required = true
+        ) objectType: ObjectEnum,
         @RequestParam("page") @Parameter(
             description = "页码",
             required = true
@@ -70,7 +81,7 @@ class CommentController(
             description = "每页数量",
             required = true
         ) limit: Int
-    ) = commentService.queryByAuthorId(authorId, page, limit)
+    ) = commentService.queryByAuthorId(authorId, objectType, page, limit)
 
     @PostMapping("/like")
     @AuthCheck

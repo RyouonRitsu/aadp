@@ -117,5 +117,5 @@ class ResearchController(
         summary = "调整研究引用数",
     )
     fun adjustRefernum(@Valid @RequestBody request: AdjustRefernumRequest) =
-        researchService.adjustRefernum(request.researchId!!, request.num!!,request.id!!)
+        researchService.adjustRefernum(request.researchId!!, request.num!!, request.id!!)
 }

@@ -12,9 +12,9 @@ import org.springframework.stereotype.Repository
  */
 @Repository
 interface CommentRepository : JpaRepository<Comment, Long> {
-    @Query("SELECT c FROM Comment c WHERE c.authorId = ?1 AND c.isDeleted = false")
-    fun findByAuthorId(authorId: Long, pageable: Pageable): Page<Comment>
+    @Query("SELECT c FROM Comment c WHERE c.authorId = ?1 AND c.objectType = ?2 AND c.isDeleted = false")
+    fun findByAuthorId(authorId: Long, objectType: Int, pageable: Pageable): Page<Comment>
 
-    @Query("SELECT c FROM Comment c WHERE c.paperId = ?1 AND c.isDeleted = false")
-    fun findByPaperId(paperId: Long, pageable: Pageable): Page<Comment>
+    @Query("SELECT c FROM Comment c WHERE c.objectId = ?1 AND c.objectType = ?2 AND c.isDeleted = false")
+    fun findByPaperId(objectId: Long, objectType: Int, pageable: Pageable): Page<Comment>
 }

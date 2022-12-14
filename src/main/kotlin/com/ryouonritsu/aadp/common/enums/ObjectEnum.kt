@@ -8,7 +8,8 @@ enum class ObjectEnum(
     val desc: String
 ) {
     PAPER(1, "论文"),
-    INSTITUTION(2, "机构");
+    INSTITUTION(2, "机构"),
+    RESEARCH(3, "研究");
 
     companion object {
         fun valueOf(code: Int) = values().first { it.code == code }
