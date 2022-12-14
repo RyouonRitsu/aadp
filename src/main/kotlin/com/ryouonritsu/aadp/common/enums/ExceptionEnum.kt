@@ -21,7 +21,9 @@ enum class ExceptionEnum(
     SERVICE_UNAVAILABLE("503", "service unavailable"),
     UNEXPECTED_ERROR("10000", "An unexpected error has occurred!"),
     UNKNOWN_ERROR("10001", "unknown mistake"),
-    OBJECT_DOES_NOT_EXIST("10002", "object does not exist in the database");
+    OBJECT_DOES_NOT_EXIST("10002", "object does not exist in the database"),
+    OBJECT_ALREADY_EXIST("10003", "object already exist in the database"),
+    DATA_ERROR("10004", "data error");
 
     companion object {
         fun getByCode(code: String) = values().first { it.code == code }

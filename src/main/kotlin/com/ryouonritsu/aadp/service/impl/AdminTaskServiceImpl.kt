@@ -3,6 +3,8 @@ package com.ryouonritsu.aadp.service.impl
 import com.alibaba.fastjson2.toJSONString
 import com.ryouonritsu.aadp.common.enums.ExceptionEnum
 import com.ryouonritsu.aadp.common.enums.ObjectEnum
+import com.ryouonritsu.aadp.common.enums.ObjectEnum.INSTITUTION
+import com.ryouonritsu.aadp.common.enums.ObjectEnum.PAPER
 import com.ryouonritsu.aadp.common.exception.ServiceException
 import com.ryouonritsu.aadp.domain.dto.ListAllTaskResultDTO
 import com.ryouonritsu.aadp.domain.protocol.request.AddTaskRequest
@@ -37,12 +39,19 @@ class AdminTaskServiceImpl(
     }
 
     override fun insert(request: AddTaskRequest): Response<Unit> {
+        if (request.objectType !in listOf(
+                PAPER,
+                INSTITUTION
+            )
+        ) throw ServiceException(ExceptionEnum.DATA_ERROR)
         val operator = userRepository.findById(RequestContext.userId.get()!!)
             .orElseThrow { ServiceException(ExceptionEnum.OBJECT_DOES_NOT_EXIST) }
+        val task = adminTaskRepository.findByOperatorIdAndObjectId(operator.id, request.objectId!!)
+        if (task != null) throw ServiceException(ExceptionEnum.OBJECT_ALREADY_EXIST)
         adminTaskRepository.save(
             AdminTask(
                 operator = operator,
-                objectId = request.objectId!!,
+                objectId = request.objectId,
                 objectType = request.objectType!!.code
             )
         )
@@ -56,7 +65,7 @@ class AdminTaskServiceImpl(
             tasks.content.map {
                 log.info("process task: {}", it.toJSONString())
                 when (ObjectEnum.valueOf(it.objectType)) {
-                    ObjectEnum.INSTITUTION -> {
+                    INSTITUTION -> {
                         val institution = institutionRepository.findById(it.objectId)
                             .orElseThrow { ServiceException(ExceptionEnum.OBJECT_DOES_NOT_EXIST) }
                         ListAllTaskResultDTO(
@@ -68,7 +77,7 @@ class AdminTaskServiceImpl(
                         )
                     }
 
-                    ObjectEnum.PAPER -> {
+                    PAPER -> {
                         val paper = paperRepository.findById(it.objectId)
                             .orElseThrow { ServiceException(ExceptionEnum.OBJECT_DOES_NOT_EXIST) }
                         ListAllTaskResultDTO(
@@ -81,6 +90,8 @@ class AdminTaskServiceImpl(
                             paperTitle = paper.paperTitle
                         )
                     }
+
+                    else -> throw ServiceException(ExceptionEnum.DATA_ERROR)
                 }
             }, "${tasks.totalElements}"
         )
@@ -92,7 +103,7 @@ class AdminTaskServiceImpl(
             it.isDeleted = true
             if (request.operationType!!) {
                 when (ObjectEnum.valueOf(it.objectType)) {
-                    ObjectEnum.INSTITUTION -> {
+                    INSTITUTION -> {
                         val institution = institutionRepository.findById(it.objectId)
                             .orElseThrow { ServiceException(ExceptionEnum.OBJECT_DOES_NOT_EXIST) }
                         it.operator.institution = institution
@@ -100,13 +111,15 @@ class AdminTaskServiceImpl(
                         userRepository.save(it.operator)
                     }
 
-                    ObjectEnum.PAPER -> {
+                    PAPER -> {
                         val paper = paperRepository.findById(it.objectId)
                             .orElseThrow { ServiceException(ExceptionEnum.OBJECT_DOES_NOT_EXIST) }
                         paper.paperAuthorId = it.operator.id
                         paper.paperAuthor = it.operator.realName.ifBlank { it.operator.username }
                         paperRepository.save(paper)
                     }
+
+                    else -> throw ServiceException(ExceptionEnum.DATA_ERROR)
                 }
             }
             adminTaskRepository.save(it)

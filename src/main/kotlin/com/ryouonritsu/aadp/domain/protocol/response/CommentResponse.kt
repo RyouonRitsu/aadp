@@ -1,7 +1,7 @@
 package com.ryouonritsu.aadp.domain.protocol.response
 
+import com.ryouonritsu.aadp.domain.dto.CommentDTO
 import com.ryouonritsu.aadp.domain.dto.UserDTO
-import com.ryouonritsu.aadp.entity.Comment
 import io.swagger.v3.oas.annotations.media.Schema
 
 /**
@@ -21,7 +21,7 @@ data class CommentResponse(
 @Schema(description = "评论响应")
 data class CommentResultDTO(
     @Schema(description = "评论", required = true)
-    val comment: Comment,
+    val comment: CommentDTO,
     @Schema(description = "作者", required = true)
     val author: UserDTO
 )
