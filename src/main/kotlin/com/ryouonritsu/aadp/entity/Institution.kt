@@ -10,7 +10,7 @@ import javax.persistence.*
 class Institution(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long = 0,
+    var institutionId: Long = 0,
     @Column(name = "institution_name")
     var institutionName: String,
     @Column(name = "institution_info")
@@ -19,13 +19,13 @@ class Institution(
     var institutionImage: String,
     @OneToOne(targetEntity = User::class)
     @JoinColumn(name = "creator_id", referencedColumnName = "id")
-    var creator: User
+    var institutionCreator: User
 ) {
     fun toDTO() = InstitutionDTO(
-        id = "$id",
+        id = "$institutionId",
         institutionName = institutionName,
         institutionInfo = institutionInfo,
         institutionImage = institutionImage,
-        creatorId = "${creator.id}"
+        creatorId = "${institutionCreator.id}"
     )
 }
