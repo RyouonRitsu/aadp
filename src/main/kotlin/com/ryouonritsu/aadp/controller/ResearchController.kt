@@ -34,7 +34,6 @@ class ResearchController(
 //    fun showInfo() = researchService.showInfo(researchId)
 
 
-
     @GetMapping("/selectResearchByResearchId")
     @Tag(name = "研究接口")
     @AuthCheck

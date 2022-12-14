@@ -17,7 +17,7 @@ interface ResearchService {
     fun selectResearchByResearchId(researchId: Long): Response<ResearchDTO>
     fun selectResearchByUserId(userId: Long): Response<List<ResearchDTO>>
 
-    fun selectByDate(startDate:String, endDate: String):Response<List<ResearchDTO>>
+    fun selectByDate(startDate: String, endDate: String): Response<List<ResearchDTO>>
     fun selectResearchByResearchField(researchField: String): Response<List<ResearchDTO>>
 
     fun selectPopResearch(): Response<List<ResearchDTO>>

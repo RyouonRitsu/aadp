@@ -10,7 +10,6 @@ import com.ryouonritsu.aadp.utils.RedisUtils.Companion.log
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 @Service
 class ResearchServiceImpl(
@@ -29,21 +28,21 @@ class ResearchServiceImpl(
 
         val dt = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")
 
-        val t1 = LocalDateTime.parse(startDate+time,dt)
-        val t2 = LocalDateTime.parse(endDate+time,dt)
+        val t1 = LocalDateTime.parse(startDate + time, dt)
+        val t2 = LocalDateTime.parse(endDate + time, dt)
 
         val newL: List<Research>
 
         val researchList = researchRepository.findAll()
         val tl = mutableListOf<Research>()
-        for(l in researchList) {
-            if(l.publishTime.isAfter(t1) && l.publishTime.isBefore(t2))
+        for (l in researchList) {
+            if (l.publishTime.isAfter(t1) && l.publishTime.isBefore(t2))
                 tl.add(l)
         }
         newL = tl
 
-        if(newL.size == 0) return Response.failure("未找到研究")
-        return Response.success("查找成功", newL.map{it.toDTO()})
+        if (newL.size == 0) return Response.failure("未找到研究")
+        return Response.success("查找成功", newL.map { it.toDTO() })
     }
 
     override fun selectResearchByResearchId(researchId: Long): Response<ResearchDTO> {
@@ -88,7 +87,6 @@ class ResearchServiceImpl(
         return Response.success("创建成功")
 
     }
-
 
 
     override fun selectPopResearch(): Response<List<ResearchDTO>> {
