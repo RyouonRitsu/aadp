@@ -46,11 +46,12 @@ class ResearchController(
         ) researchId: Long
     ) = researchService.selectResearchByResearchId(researchId)
 
-//    @GetMapping("/selectByDate")
-//    @Tag(name = "研究接口")
-//    @Operation(summary = "根据日期范围查询研究")
-//    fun selectByDate(@RequestBody request: SelectByDateRequest) =
-//        researchService.selectByDate(request.startDate!!, request.endDate!!)
+    @PostMapping("/selectByDate")
+    @Tag(name = "研究接口")
+    @AuthCheck
+    @Operation(summary = "根据日期范围查询研究")
+    fun selectByDate(@RequestBody request: SelectByDateRequest) =
+        researchService.selectByDate(request.startDate!!, request.endDate!!)
 
     @GetMapping("/selectResearchByUserId")
     @Tag(name = "研究接口")
