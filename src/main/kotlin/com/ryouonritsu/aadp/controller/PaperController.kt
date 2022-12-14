@@ -33,6 +33,9 @@ class PaperController(
         @RequestParam("subject", required = false) @Parameter(
             description = "专题学科关键词"
         ) subject: String?,
+        @RequestParam("year", required = false) @Parameter(
+            description = "年份"
+        ) year: String?,
         @RequestParam("page", required = false, defaultValue = "1")
         @Parameter(
             description = "查询页数，从1开始，默认为1"
@@ -41,7 +44,7 @@ class PaperController(
         @Parameter(
             description = "每页数据条数，默认为10"
         ) limit: Int
-    ) = paperService.searchPaperByKeyword(keyword, subject, page, limit)
+    ) = paperService.searchPaperByKeyword(keyword, subject, year, page, limit)
 
     @GetMapping("/searchPaperResultInfoByKeyword")
     @AuthCheck
@@ -59,7 +62,10 @@ class PaperController(
         @RequestParam("subject", required = false) @Parameter(
             description = "专题学科关键词"
         ) subject: String?,
-    ) = paperService.searchPaperByKeyword(keyword, subject)
+        @RequestParam("year", required = false) @Parameter(
+            description = "年份"
+        ) year: String?,
+    ) = paperService.searchPaperByKeyword(keyword, subject, year)
 
     @GetMapping("/getTop10PaperByClick")
     @AuthCheck

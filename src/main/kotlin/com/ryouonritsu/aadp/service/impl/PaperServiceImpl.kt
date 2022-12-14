@@ -5,9 +5,11 @@ import com.alibaba.fastjson2.JSONObject
 import com.ryouonritsu.aadp.domain.dto.PaperDTO
 import com.ryouonritsu.aadp.domain.dto.PaperResultInfoDTO
 import com.ryouonritsu.aadp.domain.protocol.response.Response
+import com.ryouonritsu.aadp.entity.Paper
 import com.ryouonritsu.aadp.repository.PaperRepository
 import com.ryouonritsu.aadp.service.PaperService
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import java.lang.Integer.toHexString
@@ -27,21 +29,31 @@ class PaperServiceImpl(
     override fun searchPaperByKeyword(
         keyword: String,
         subject: String?,
+        year: String?,
         page: Int,
         limit: Int
     ): Response<List<PaperDTO>> {
         return runCatching {
             val pageable = PageRequest.of(page - 1, limit)
             val paperDTOs = arrayListOf<PaperDTO>()
+            var papers: Page<Paper>
             if (subject.isNullOrBlank()) {
-                val papers = paperRepository.findPapersByPaperTitleLike("%$keyword%", pageable)
+                if (year.isNullOrBlank()) {
+                    papers = paperRepository.findPapersByPaperTitleLike("%$keyword%", pageable)
+                } else {
+                    papers = paperRepository.findPapersByTitleAndYearLike(keyword, year, pageable)
+                }
                 papers.content.forEach {
                     paperDTOs.add(it.toDTO())
                 }
             } else {
                 val uSubject = subject.toCharArray()
                     .joinToString(separator = "", truncated = "") { "\\\\u${toHexString(it.code)}" }
-                val papers = paperRepository.findPapersByPaperTitleLike(keyword, uSubject, pageable)
+                if (year.isNullOrBlank()) {
+                    papers = paperRepository.findPapersByTitleAndSubLike(keyword, uSubject, pageable)
+                } else {
+                    papers = paperRepository.findPapersByTitleAndSubAndYearLike(keyword, uSubject, year, pageable)
+                }
                 papers.content.forEach {
                     paperDTOs.add(it.toDTO())
                 }
@@ -54,11 +66,16 @@ class PaperServiceImpl(
         )
     }
 
-    override fun searchPaperByKeyword(keyword: String, subject: String?): Response<PaperResultInfoDTO> {
+    override fun searchPaperByKeyword(keyword: String, subject: String?, year: String?): Response<PaperResultInfoDTO> {
         return runCatching {
             val subs = arrayListOf<String>()
+            var papers: List<Paper>
             if (subject.isNullOrBlank()) {
-                val papers = paperRepository.findPapersByPaperTitleLike("%$keyword%")
+                if (year.isNullOrBlank()) {
+                    papers = paperRepository.findPapersByPaperTitleLike("%$keyword%")
+                } else {
+                    papers = paperRepository.findPapersByTitleAndYearLike(keyword, year)
+                }
                 papers.forEach {
                     if (it.paperOtherInfo.isNotBlank()) {
                         val infos: JSONObject = JSON.parseObject(it.paperOtherInfo)
@@ -74,7 +91,11 @@ class PaperServiceImpl(
             } else {
                 val uSubject = subject.toCharArray()
                     .joinToString(separator = "", truncated = "") { "\\\\u${toHexString(it.code)}" }
-                val papers = paperRepository.findPapersByPaperTitleLike(keyword, uSubject)
+                if (year.isNullOrBlank()) {
+                    papers = paperRepository.findPapersByTitleAndSubLike(keyword, uSubject)
+                } else {
+                    papers = paperRepository.findPapersByTitleAndSubAndYearLike(keyword, uSubject, year)
+                }
                 val paperOtherInfoDTO = PaperResultInfoDTO(papers.size.toString(), subs)
                 Response.success("获取成功", paperOtherInfoDTO)
             }
