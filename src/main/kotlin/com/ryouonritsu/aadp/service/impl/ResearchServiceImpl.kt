@@ -8,6 +8,8 @@ import com.ryouonritsu.aadp.repository.UserRepository
 import com.ryouonritsu.aadp.service.ResearchService
 import com.ryouonritsu.aadp.utils.RedisUtils.Companion.log
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Service
 class ResearchServiceImpl(
@@ -20,6 +22,28 @@ class ResearchServiceImpl(
 //        val userid = r.researchUserId
 //        val u = userRepository.findById(userid)
 //    }
+
+    override fun selectByDate(startDate: String, endDate: String): Response<List<ResearchDTO>> {
+        val time = " 00:00:00"
+
+        val dt = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")
+
+        val t1 = LocalDateTime.parse(startDate + time, dt)
+        val t2 = LocalDateTime.parse(endDate + time, dt)
+
+        val newL: List<Research>
+
+        val researchList = researchRepository.findAll()
+        val tl = mutableListOf<Research>()
+        for (l in researchList) {
+            if (l.publishTime.isAfter(t1) && l.publishTime.isBefore(t2))
+                tl.add(l)
+        }
+        newL = tl
+
+        if (newL.size == 0) return Response.failure("未找到研究")
+        return Response.success("查找成功", newL.map { it.toDTO() })
+    }
 
     override fun selectResearchByResearchId(researchId: Long): Response<ResearchDTO> {
         val r = try {
@@ -63,6 +87,7 @@ class ResearchServiceImpl(
         return Response.success("创建成功")
 
     }
+
 
     override fun selectPopResearch(): Response<List<ResearchDTO>> {
         log.info("查找最受欢迎研究")
@@ -128,7 +153,7 @@ class ResearchServiceImpl(
         } catch (e: NoSuchElementException) {
             return Response.failure("未找到此研究")
         }
-        research.refernum = num
+        research.refernum += num
         research = researchRepository.save(research)
         return Response.success("修改成功", research.toDTO())
     }

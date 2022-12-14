@@ -77,5 +77,5 @@ class CommentController(
     @Tag(name = "评论接口")
     @Operation(summary = "点赞评论", description = "根据id点赞评论")
     fun like(@Valid @RequestBody request: SimpleCommentRequest) =
-        commentService.like(request.commentId!!)
+        commentService.like(request.commentId!!, request.value, request.reverse)
 }

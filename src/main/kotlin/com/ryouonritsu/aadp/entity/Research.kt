@@ -22,10 +22,10 @@ class Research(
     @Column(name = "research_title")
     var researchTitle: String = "",
 
-    @Column(name = "research_content")
+    @Column(name = "research_content", columnDefinition = "LONGTEXT")
     var researchContent: String = "",
 
-    @Column(name = "research_abstract")
+    @Column(name = "research_abstract", columnDefinition = "LONGTEXT")
     var researchAbstract: String = "",
 
     @Column(name = "publish_time")
@@ -33,6 +33,8 @@ class Research(
 
     @Column(name = "update_time")
     var updateTime: LocalDateTime = LocalDateTime.now(),
+
+//    var userName: String
 
 //    @OneToOne(targetEntity = User::class)
 //    @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -48,6 +50,7 @@ class Research(
         researchContent = researchContent,
         publishTime = publishTime,
         updateTime = updateTime,
-        userId = "$researchUserId"
+        userId = "$researchUserId",
+//        userName = userName
     )
 }

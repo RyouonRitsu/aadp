@@ -97,10 +97,10 @@ class CommentServiceImpl(
         )
     }
 
-    override fun like(commentId: Long): Response<Unit> {
+    override fun like(commentId: Long, value: Int, reverse: Boolean): Response<Unit> {
         val comment = commentRepository.findById(commentId)
             .orElseThrow { ServiceException(ExceptionEnum.OBJECT_DOES_NOT_EXIST) }
-        comment.likeCount = comment.likeCount!! + 1
+        comment.likeCount = comment.likeCount!! + (if (reverse) -1 else 1) * value
         commentRepository.save(comment)
         return Response.success()
     }
