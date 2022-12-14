@@ -54,7 +54,10 @@ class PaperServiceImpl(
         )
     }
 
-    override fun searchPaperByKeyword(keyword: String, subject: String?): Response<PaperResultInfoDTO> {
+    override fun searchPaperByKeyword(
+        keyword: String,
+        subject: String?
+    ): Response<PaperResultInfoDTO> {
         return runCatching {
             val subs = arrayListOf<String>()
             if (subject.isNullOrBlank()) {
@@ -69,7 +72,8 @@ class PaperServiceImpl(
                         }
                     }
                 }
-                val paperOtherInfoDTO = PaperResultInfoDTO(papers.size.toString(), subs.toSet().toList())
+                val paperOtherInfoDTO =
+                    PaperResultInfoDTO(papers.size.toString(), subs.toSet().toList())
                 Response.success("获取成功", paperOtherInfoDTO)
             } else {
                 val uSubject = subject.toCharArray()
