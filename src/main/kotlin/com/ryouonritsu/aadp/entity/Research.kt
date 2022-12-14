@@ -13,6 +13,11 @@ class Research(
 
     var refernum: Int = 0,
 
+//    @Transient
+//    var doneIds: MutableList<Long>,
+
+    var doneids: String,
+
     @Column(name = "user_id")
     var researchUserId: Long,
 
@@ -22,10 +27,10 @@ class Research(
     @Column(name = "research_title")
     var researchTitle: String = "",
 
-    @Column(name = "research_content")
+    @Column(name = "research_content", columnDefinition = "LONGTEXT")
     var researchContent: String = "",
 
-    @Column(name = "research_abstract")
+    @Column(name = "research_abstract", columnDefinition = "LONGTEXT")
     var researchAbstract: String = "",
 
     @Column(name = "publish_time")
@@ -51,6 +56,5 @@ class Research(
         publishTime = publishTime,
         updateTime = updateTime,
         userId = "$researchUserId",
-//        userName = userName
     )
 }

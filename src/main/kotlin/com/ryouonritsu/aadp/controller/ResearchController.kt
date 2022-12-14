@@ -113,10 +113,9 @@ class ResearchController(
 
     @PostMapping("/adjustRefernum")
     @Tag(name = "研究接口")
-    @AuthCheck
     @Operation(
         summary = "调整研究引用数",
     )
     fun adjustRefernum(@Valid @RequestBody request: AdjustRefernumRequest) =
-        researchService.adjustRefernum(request.researchId!!, request.num!!)
+        researchService.adjustRefernum(request.researchId!!, request.num!!,request.id!!)
 }
