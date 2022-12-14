@@ -107,6 +107,49 @@ class ResearchServiceImpl(
 
     }
 
+    override fun selectFPopResearch(researchField: String): Response<List<ResearchDTO>> {
+        var researchList = try {
+            researchRepository.findPop()
+        } catch (e: NoSuchElementException) {
+            return Response.failure("未找到研究")
+        }
+
+        var newL: List<Research>
+        val tl = mutableListOf<Research>()
+        for (l in researchList) {
+            if (researchField in l.researchField) {
+                tl.add(l)
+            }
+        }
+        newL = tl
+        if (tl.size > 10) {
+            newL = tl.take(10)
+        }
+
+        return Response.success("查找成功", newL.map { it.toDTO() })
+    }
+
+    override fun selectFLatestResearch(researchField: String): Response<List<ResearchDTO>> {
+        var researchList = try {
+            researchRepository.findLatest()
+        } catch (e: NoSuchElementException) {
+            return Response.failure("未找到研究")
+        }
+
+        var newL: List<Research>
+        val tl = mutableListOf<Research>()
+        for (l in researchList) {
+            if (researchField in l.researchField) {
+                tl.add(l)
+            }
+        }
+        newL = tl
+        if (tl.size > 10) {
+            newL = tl.take(10)
+        }
+        return Response.success("查找成功", newL.map { it.toDTO() })
+    }
+
     override fun selectLatestResearch(): Response<List<ResearchDTO>> {
         log.info("查找最新研究")
         var researchList = try {
@@ -128,14 +171,10 @@ class ResearchServiceImpl(
         val newL: List<Research>
         try {
             val researchList = researchRepository.findAll()
-            System.out.println(researchList)
             val tl = mutableListOf<Research>()
             for (l in researchList) {
-//                System.out.println(l.researchField)
-//                System.out.println(researchField)
                 if (researchField in l.researchField) {
                     tl.add(l)
-//                    System.out.println("1")
                 }
             }
             newL = tl

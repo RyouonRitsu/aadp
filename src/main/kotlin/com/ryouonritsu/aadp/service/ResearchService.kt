@@ -21,7 +21,10 @@ interface ResearchService {
     fun selectResearchByResearchField(researchField: String): Response<List<ResearchDTO>>
 
     fun selectPopResearch(): Response<List<ResearchDTO>>
+    fun selectFPopResearch(researchField: String): Response<List<ResearchDTO>>
     fun selectLatestResearch(): Response<List<ResearchDTO>>
+    fun selectFLatestResearch(researchField: String): Response<List<ResearchDTO>>
+
 
     fun modifyResearchContent(researchId: Long, researchContent: String): Response<ResearchDTO>
     fun modifyResearchTitle(researchId: Long, researchTitle: String): Response<ResearchDTO>
