@@ -1,6 +1,5 @@
 package com.ryouonritsu.aadp.service.impl
 
-import com.alibaba.fastjson2.toJSONString
 import com.ryouonritsu.aadp.common.enums.ExceptionEnum
 import com.ryouonritsu.aadp.common.enums.ObjectEnum
 import com.ryouonritsu.aadp.common.enums.ObjectEnum.INSTITUTION
@@ -63,7 +62,7 @@ class AdminTaskServiceImpl(
         val tasks = adminTaskRepository.findAllByObjectType(type.code, pageable)
         return ListAllTaskResponse(
             tasks.content.map {
-                log.info("process task: {}", it.toJSONString())
+                log.info("process task: ${it.id}")
                 when (ObjectEnum.valueOf(it.objectType)) {
                     INSTITUTION -> {
                         val institution = institutionRepository.findById(it.objectId)
