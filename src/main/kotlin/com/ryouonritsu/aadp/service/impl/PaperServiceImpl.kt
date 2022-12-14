@@ -26,63 +26,58 @@ class PaperServiceImpl(
 
     override fun searchPaperByKeyword(
         keyword: String,
+        subject: String?,
         page: Int,
         limit: Int
     ): Response<List<PaperDTO>> {
         return runCatching {
             val pageable = PageRequest.of(page - 1, limit)
-            val papers = paperRepository.findPapersByPaperTitleLike("%$keyword%", pageable)
             val paperDTOs = arrayListOf<PaperDTO>()
-            papers.content.forEach {
-                paperDTOs.add(it.toDTO())
-            }
-            Response.success("获取成功", paperDTOs.toList())
-        }.onFailure {
-            log.error(it.stackTraceToString())
-        }.getOrDefault(
-            Response.failure("获取失败, 发生意外错误")
-        )
-    }
-
-    override fun searchPaperByKeyword(
-        keyword: String,
-        subject: String,
-        page: Int,
-        limit: Int
-    ): Response<List<PaperDTO>> {
-        return runCatching {
-            val pageable = PageRequest.of(page - 1, limit)
-            val uSubject = subject.toCharArray()
-                .joinToString(separator = "", truncated = "") { "\\\\u${toHexString(it.code)}" }
-            val papers = paperRepository.findPapersByPaperTitleLike(keyword, uSubject, pageable)
-            val paperDTOs = arrayListOf<PaperDTO>()
-            papers.content.forEach {
-                paperDTOs.add(it.toDTO())
-            }
-            Response.success("获取成功", paperDTOs.toList())
-        }.onFailure {
-            log.error(it.stackTraceToString())
-        }.getOrDefault(
-            Response.failure("获取失败, 发生意外错误")
-        )
-    }
-
-    override fun searchPaperByKeyword(keyword: String): Response<PaperResultInfoDTO> {
-        return runCatching {
-            val papers = paperRepository.findPapersByPaperTitleLike("%$keyword%")
-            val subs = arrayListOf<String>()
-            papers.forEach {
-                if (it.paperOtherInfo.isNotBlank()) {
-                    val infos: JSONObject = JSON.parseObject(it.paperOtherInfo)
-                    if (infos.containsKey("专题")) {
-                        val str = infos.getString("专题").replace(";", "")
-                        val strs = str.split("\\s+".toRegex())
-                        subs.addAll(strs)
-                    }
+            if (subject.isNullOrBlank()) {
+                val papers = paperRepository.findPapersByPaperTitleLike("%$keyword%", pageable)
+                papers.content.forEach {
+                    paperDTOs.add(it.toDTO())
+                }
+            } else {
+                val uSubject = subject.toCharArray()
+                    .joinToString(separator = "", truncated = "") { "\\\\u${toHexString(it.code)}" }
+                val papers = paperRepository.findPapersByPaperTitleLike(keyword, uSubject, pageable)
+                papers.content.forEach {
+                    paperDTOs.add(it.toDTO())
                 }
             }
-            val paperOtherInfoDTO = PaperResultInfoDTO(papers.size.toString(), subs.toSet().toList())
-            Response.success("获取成功", paperOtherInfoDTO)
+            Response.success("获取成功", paperDTOs.toList())
+        }.onFailure {
+            log.error(it.stackTraceToString())
+        }.getOrDefault(
+            Response.failure("获取失败, 发生意外错误")
+        )
+    }
+
+    override fun searchPaperByKeyword(keyword: String, subject: String?): Response<PaperResultInfoDTO> {
+        return runCatching {
+            val subs = arrayListOf<String>()
+            if (subject.isNullOrBlank()) {
+                val papers = paperRepository.findPapersByPaperTitleLike("%$keyword%")
+                papers.forEach {
+                    if (it.paperOtherInfo.isNotBlank()) {
+                        val infos: JSONObject = JSON.parseObject(it.paperOtherInfo)
+                        if (infos.containsKey("专题")) {
+                            val str = infos.getString("专题").replace(";", "")
+                            val strs = str.split("\\s+".toRegex())
+                            subs.addAll(strs)
+                        }
+                    }
+                }
+                val paperOtherInfoDTO = PaperResultInfoDTO(papers.size.toString(), subs.toSet().toList())
+                Response.success("获取成功", paperOtherInfoDTO)
+            } else {
+                val uSubject = subject.toCharArray()
+                    .joinToString(separator = "", truncated = "") { "\\\\u${toHexString(it.code)}" }
+                val papers = paperRepository.findPapersByPaperTitleLike(keyword, uSubject)
+                val paperOtherInfoDTO = PaperResultInfoDTO(papers.size.toString(), subs)
+                Response.success("获取成功", paperOtherInfoDTO)
+            }
         }.onFailure {
             log.error(it.stackTraceToString())
         }.getOrDefault(
