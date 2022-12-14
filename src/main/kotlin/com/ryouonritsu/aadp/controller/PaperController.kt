@@ -6,10 +6,7 @@ import com.ryouonritsu.aadp.utils.RedisUtils
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 /**
  *
@@ -27,14 +24,32 @@ class PaperController(
     @Tag(name = "论文接口")
     @Operation(summary = "根据给出的关键词在标题中模糊查询论文")
     fun searchPaperByKeyword(
-        @RequestParam("token") @Parameter(
-            description = "用户登陆后获取的token令牌",
+        @RequestHeader(
+            name = "token",
             required = true
         ) token: String,
         @RequestParam("keyword") @Parameter(
             description = "查询关键词",
             required = true
         ) keyword: String,
-        page: Int = 1, limit: Int = 10
+        @RequestParam("page", required = false, defaultValue = "1")
+        @Parameter(
+            description = "查询页数，从1开始，默认为1"
+        ) page: Int,
+        @RequestParam("limit", required = false, defaultValue = "10")
+        @Parameter(
+            description = "每页数据条数，默认为10"
+        ) limit: Int
     ) = paperService.searchPaperByKeyword(keyword, page, limit)
+
+    @GetMapping("/getTop10PaperByClick")
+    @AuthCheck
+    @Tag(name = "论文接口")
+    @Operation(summary = "返回点击量最高的十条论文")
+    fun getTop10PaperByClick(
+        @RequestHeader(
+            name = "token",
+            required = true
+        ) token: String
+    ) = paperService.getTop10PaperByClick()
 }

@@ -9,4 +9,8 @@ import com.ryouonritsu.aadp.domain.protocol.response.Response
  */
 interface PaperService {
     fun searchPaperByKeyword(keyword: String, page: Int, limit: Int): Response<List<PaperDTO>>
+
+    fun searchPaperByKeyword(keyword: String): Response<List<PaperDTO>>
+
+    fun getTop10PaperByClick(): Response<List<PaperDTO>>
 }
