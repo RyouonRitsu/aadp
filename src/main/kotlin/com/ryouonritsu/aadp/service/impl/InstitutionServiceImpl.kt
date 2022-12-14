@@ -72,7 +72,7 @@ class InstitutionServiceImpl (
         return Response.success("查找成功", paperList.map { it.toDTO() })
     }
 
-    override fun showMember(institutionId: Long) {
+    override fun showMember(institutionId: Long): Response<List<UserDTO>> {
         log.info("查询机构成员")
         var memberList = institutionRepository.findMember(institutionId)
         if(memberList.size > 10){
