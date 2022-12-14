@@ -10,7 +10,7 @@ import javax.persistence.*
 class Institution(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var institutionId: Long = 0,
+    var id: Long = 0,
     @Column(name = "institution_name")
     var institutionName: String,
     @Column(name = "institution_info")
@@ -22,7 +22,7 @@ class Institution(
     var institutionCreator: User
 ) {
     fun toDTO() = InstitutionDTO(
-        id = "$institutionId",
+        id = "$id",
         institutionName = institutionName,
         institutionInfo = institutionInfo,
         institutionImage = institutionImage,

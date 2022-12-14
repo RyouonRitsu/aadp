@@ -25,26 +25,29 @@ interface InstitutionRepository : JpaRepository<Institution, Long> {
     fun findByInstitutionName(
         institutionName: String,
         pageable: Pageable = PageRequest.of(0, 1)
-    ): Institution?
+    ): Page<Institution>
 
-    @Query("SELECT x FROM Institution x WHERE x.institutionId = ?1 ")
+    @Query("SELECT x FROM Institution x WHERE x.id = ?1 ")
     fun findByInstitutionId(
         institutionId: Long,
         pageable: Pageable = PageRequest.of(0, 1)
-    ): Institution?
+    ): Page<Institution>
 
-    @Query("SELECT COUNT(x) FROM User x WHERE x.institution.institutionId = ?1")
+
+    @Query("SELECT COUNT(x) FROM User x WHERE x.institution.id = ?1")
     fun findMemberNum(institutionId: Long): Long
 
-    @Query("SELECT COUNT(p) FROM Paper p, User u WHERE p.paperAuthorId = u.id and u.institution.institutionId = ?1")
+    @Query("SELECT COUNT(p) FROM Paper p, User u WHERE p.paperAuthorId = u.id and u.institution.id = ?1")
     fun findPaperNum(InstitutionId: Long): Long
 
-    @Query("SELECT COUNT(p.paper_cited) FROM Paper p, User u WHERE p.paperAuthorId = u.id and u.institution.institutionId = ?1")
+    @Query("SELECT COUNT(p.paperCited) FROM Paper p, User u WHERE p.paperAuthorId = u.id and u.institution.id = ?1")
     fun findCitedNum(InstitutionId: Long): Long
 
-    @Query("SELECT p FROM Paper p , User u WHERE p.paperAuthorId = u.id and u.institution.institutionId= ?1 ORDER BY p.paperCited DESC")
+
+    @Query("SELECT p FROM Paper p , User u WHERE p.paperAuthorId = u.id and u.institution.id= ?1 ORDER BY p.paperCited DESC")
     fun findPaper(InstitutionId: Long): List<Paper>
 
-    @Query("SELECT u FROM User u WHERE u.institution.institutionId = ?1")
+    @Query("SELECT u FROM User u WHERE u.institution.id = ?1")
     fun findMember(InstitutionId: Long): List<User>
+
 }

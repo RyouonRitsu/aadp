@@ -4,7 +4,7 @@ import com.ryouonritsu.aadp.domain.dto.InstitutionDTO
 import com.ryouonritsu.aadp.domain.dto.PaperDTO
 import com.ryouonritsu.aadp.domain.protocol.response.Response
 import com.ryouonritsu.aadp.entity.User
-import com.ryouonritsu.aadp.domain.dto.
+import com.ryouonritsu.aadp.domain.dto.UserDTO
 
 interface InstitutionService {
     fun createInstitution(
@@ -25,4 +25,5 @@ interface InstitutionService {
     fun showPaper(institutionId: Long): Response<List<PaperDTO>>
     //机构成员：头像 姓名
     fun showMember(institutionId: Long): Response<List<UserDTO>>
+
 }
