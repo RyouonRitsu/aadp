@@ -14,6 +14,14 @@ import org.springframework.stereotype.Repository
 @Repository
 interface PaperRepository : JpaRepository<Paper, Long> {
     fun findPapersByPaperTitleLike(keyword: String, pageable: Pageable): Page<Paper>
+
+    @Query("SELECT p FROM Paper p WHERE p.paperTitle LIKE %?1% AND p.paperOtherInfo LIKE %?2%")
+    fun findPapersByPaperTitleLike(keyword: String, subject: String, pageable: Pageable): Page<Paper>
+
+    fun findPapersByPaperTitleLike(keyword: String): List<Paper>
+
+    fun findTop10ByOrderByPaperClickDesc(): List<Paper>
+
     fun countByPaperAuthorId(userId: Long): Long
 
     @Query(
