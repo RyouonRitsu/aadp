@@ -38,7 +38,6 @@ import javax.mail.Transport
 import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeMessage
 import kotlin.io.path.Path
-import kotlin.reflect.jvm.internal.impl.load.java.JavaClassesTracker.Default
 
 /**
  * @author ryouonritsu
@@ -523,11 +522,11 @@ class UserServiceImpl(
         log.info("个人认领机构")
         var u = userRepository.findById(user).get()
         var r = institutionRepository.findByInstitutionName(institutionName).elementAtOrNull(0)
-        if(r != null){
+        if (r != null) {
             r.institutionCreator = u
             //直接认领吧
             return 1
-        }else{
+        } else {
             institutionRepository.save(
                 Institution(
                     institutionName = institutionName,

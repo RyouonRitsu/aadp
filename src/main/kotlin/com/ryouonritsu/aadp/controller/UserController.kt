@@ -1,6 +1,7 @@
 package com.ryouonritsu.aadp.controller
 
 import com.ryouonritsu.aadp.common.annotation.AuthCheck
+import com.ryouonritsu.aadp.common.enums.AuthEnum
 import com.ryouonritsu.aadp.common.enums.ObjectEnum
 import com.ryouonritsu.aadp.domain.protocol.request.*
 import com.ryouonritsu.aadp.domain.protocol.response.Response
@@ -160,7 +161,7 @@ class UserController(
         userService.adjustmentCredit(request.userId!!, request.value!!)
 
     @PostMapping("/addTask")
-    @AuthCheck
+    @AuthCheck(auth = [AuthEnum.TOKEN, AuthEnum.ADMIN])
     @Tag(name = "用户接口")
     @Operation(
         summary = "添加管理员审核任务",
@@ -169,7 +170,7 @@ class UserController(
     fun addTask(@Valid @RequestBody request: AddTaskRequest) = adminTaskService.insert(request)
 
     @GetMapping("/listAllTask")
-    @AuthCheck
+    @AuthCheck(auth = [AuthEnum.TOKEN, AuthEnum.ADMIN])
     @Tag(name = "用户接口")
     @Operation(
         summary = "获取所有管理员审核任务",
@@ -191,7 +192,7 @@ class UserController(
     ) = Response.success(adminTaskService.listAll(type!!, page, limit))
 
     @PostMapping("/batchOperation")
-    @AuthCheck
+    @AuthCheck(auth = [AuthEnum.TOKEN, AuthEnum.ADMIN])
     @Tag(name = "用户接口")
     @Operation(
         summary = "批量操作管理员审核任务",
@@ -285,6 +286,6 @@ class UserController(
     @Operation(
         summary = "用户认领机构"
     )
-    fun claim( @RequestBody request: ClaimRequest ) =
+    fun claim(@RequestBody request: ClaimRequest) =
         userService.claim(request.institutionName, request.userId)
 }

@@ -40,14 +40,14 @@ class CommentController(
     @GetMapping("/queryByObjectId")
     @AuthCheck
     @Tag(name = "评论接口")
-    @Operation(summary = "根据论文id查询评论", description = "根据论文id查询评论")
+    @Operation(summary = "根据Object Id查询评论", description = "根据论文id查询评论")
     fun queryByObjectId(
         @RequestParam("objectId") @Parameter(
             description = "Object Id",
             required = true
         ) objectId: Long,
         @RequestParam("objectType") @Parameter(
-            description = "页码",
+            description = "Object Enum，PAPER或RESEARCH",
             required = true
         ) objectType: ObjectEnum,
         @RequestParam("page") @Parameter(
@@ -70,7 +70,7 @@ class CommentController(
             required = true
         ) authorId: Long,
         @RequestParam("objectType") @Parameter(
-            description = "页码",
+            description = "Object Enum，PAPER或RESEARCH",
             required = true
         ) objectType: ObjectEnum,
         @RequestParam("page") @Parameter(

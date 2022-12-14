@@ -18,7 +18,11 @@ interface PaperService {
         citedSort: Boolean
     ): Response<List<PaperDTO>>
 
-    fun searchPaperByKeyword(keyword: String, subject: String?, year: String?): Response<PaperResultInfoDTO>
+    fun searchPaperByKeyword(
+        keyword: String,
+        subject: String?,
+        year: String?
+    ): Response<PaperResultInfoDTO>
 
     fun getTop10PaperByClick(): Response<List<PaperDTO>>
 }

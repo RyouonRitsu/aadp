@@ -41,13 +41,20 @@ class PaperServiceImpl(
             if (subject.isNullOrBlank()) {
                 papers = if (year.isNullOrBlank()) {
                     if (citedSort) {
-                        paperRepository.findPapersByPaperTitleLikeOrderByPaperCitedDesc("%$keyword%", pageable)
+                        paperRepository.findPapersByPaperTitleLikeOrderByPaperCitedDesc(
+                            "%$keyword%",
+                            pageable
+                        )
                     } else {
                         paperRepository.findPapersByPaperTitleLike("%$keyword%", pageable)
                     }
                 } else {
                     if (citedSort) {
-                        paperRepository.findPapersByTitleAndYearLikeOrderByCitedDesc(keyword, year, pageable)
+                        paperRepository.findPapersByTitleAndYearLikeOrderByCitedDesc(
+                            keyword,
+                            year,
+                            pageable
+                        )
                     } else {
                         paperRepository.findPapersByTitleAndYearLike(keyword, year, pageable)
                     }
@@ -60,15 +67,29 @@ class PaperServiceImpl(
                     .joinToString(separator = "", truncated = "") { "\\\\u${toHexString(it.code)}" }
                 papers = if (year.isNullOrBlank()) {
                     if (citedSort) {
-                        paperRepository.findPapersByTitleAndSubLikeOrderByCitedDesc(keyword, uSubject, pageable)
+                        paperRepository.findPapersByTitleAndSubLikeOrderByCitedDesc(
+                            keyword,
+                            uSubject,
+                            pageable
+                        )
                     } else {
                         paperRepository.findPapersByTitleAndSubLike(keyword, uSubject, pageable)
                     }
                 } else {
                     if (citedSort) {
-                        paperRepository.findPapersByTitleAndSubAndYearLikeOrderByCitedDesc(keyword, uSubject, year, pageable)
+                        paperRepository.findPapersByTitleAndSubAndYearLikeOrderByCitedDesc(
+                            keyword,
+                            uSubject,
+                            year,
+                            pageable
+                        )
                     } else {
-                        paperRepository.findPapersByTitleAndSubAndYearLike(keyword, uSubject, year, pageable)
+                        paperRepository.findPapersByTitleAndSubAndYearLike(
+                            keyword,
+                            uSubject,
+                            year,
+                            pageable
+                        )
                     }
                 }
                 papers.content.forEach {
@@ -83,7 +104,11 @@ class PaperServiceImpl(
         )
     }
 
-    override fun searchPaperByKeyword(keyword: String, subject: String?, year: String?): Response<PaperResultInfoDTO> {
+    override fun searchPaperByKeyword(
+        keyword: String,
+        subject: String?,
+        year: String?
+    ): Response<PaperResultInfoDTO> {
         return runCatching {
             val subs = arrayListOf<String>()
             val papers: List<Paper>
@@ -103,7 +128,8 @@ class PaperServiceImpl(
                         }
                     }
                 }
-                val paperOtherInfoDTO = PaperResultInfoDTO(papers.size.toString(), subs.toSet().toList())
+                val paperOtherInfoDTO =
+                    PaperResultInfoDTO(papers.size.toString(), subs.toSet().toList())
                 Response.success("获取成功", paperOtherInfoDTO)
             } else {
                 val uSubject = subject.toCharArray()
@@ -111,7 +137,8 @@ class PaperServiceImpl(
                 if (year.isNullOrBlank()) {
                     papers = paperRepository.findPapersByTitleAndSubLike(keyword, uSubject)
                 } else {
-                    papers = paperRepository.findPapersByTitleAndSubAndYearLike(keyword, uSubject, year)
+                    papers =
+                        paperRepository.findPapersByTitleAndSubAndYearLike(keyword, uSubject, year)
                 }
                 val paperOtherInfoDTO = PaperResultInfoDTO(papers.size.toString(), subs)
                 Response.success("获取成功", paperOtherInfoDTO)

@@ -42,7 +42,10 @@ interface PaperRepository : JpaRepository<Paper, Long> {
 
     /********** cited sort search **********/
 
-    fun findPapersByPaperTitleLikeOrderByPaperCitedDesc(keyword: String, pageable: Pageable): Page<Paper>
+    fun findPapersByPaperTitleLikeOrderByPaperCitedDesc(
+        keyword: String,
+        pageable: Pageable
+    ): Page<Paper>
 
     @Query("SELECT p FROM Paper p WHERE p.paperTitle LIKE %?1% AND p.paperOtherInfo LIKE %?2% ORDER BY p.paperCited DESC")
     fun findPapersByTitleAndSubLikeOrderByCitedDesc(

@@ -87,9 +87,9 @@ class ResearchController(
     @Operation(summary = "找到领域最受欢迎的研究")
     fun selectFPopResearch(
         @RequestParam("research_field") @Parameter(
-        description = "领域",
-        required = true
-    ) researchField: String
+            description = "领域",
+            required = true
+        ) researchField: String
     ) = researchService.selectFPopResearch(researchField)
 
 
