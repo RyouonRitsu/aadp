@@ -81,7 +81,8 @@ class PaperServiceImpl(
                     }
                 }
             }
-            val paperOtherInfoDTO = PaperResultInfoDTO(papers.size.toString(), subs.toSet().toList())
+            val paperOtherInfoDTO =
+                PaperResultInfoDTO(papers.size.toString(), subs.toSet().toList())
             Response.success("获取成功", paperOtherInfoDTO)
         }.onFailure {
             log.error(it.stackTraceToString())

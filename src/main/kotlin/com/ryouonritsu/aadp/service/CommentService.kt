@@ -12,5 +12,5 @@ interface CommentService {
     fun delete(commentId: Long): Response<Unit>
     fun queryByPaperId(paperId: Long, page: Int, limit: Int): Response<CommentResponse>
     fun queryByAuthorId(authorId: Long, page: Int, limit: Int): Response<CommentResponse>
-    fun like(commentId: Long): Response<Unit>
+    fun like(commentId: Long, value: Int = 1, reverse: Boolean = false): Response<Unit>
 }
