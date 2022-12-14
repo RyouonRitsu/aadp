@@ -4,6 +4,7 @@ import com.ryouonritsu.aadp.domain.dto.InstitutionDTO
 import com.ryouonritsu.aadp.domain.dto.PaperDTO
 import com.ryouonritsu.aadp.domain.protocol.response.Response
 import com.ryouonritsu.aadp.entity.User
+import com.ryouonritsu.aadp.domain.dto.
 
 interface InstitutionService {
     fun createInstitution(
