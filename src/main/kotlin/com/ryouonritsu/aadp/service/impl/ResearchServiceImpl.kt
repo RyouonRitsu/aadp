@@ -82,6 +82,7 @@ class ResearchServiceImpl(
                 researchContent = researchContent,
                 researchField = researchField,
                 researchUserId = researchUserId,
+                doneids = "+"
             )
         )
         return Response.success("创建成功")
@@ -146,14 +147,24 @@ class ResearchServiceImpl(
     }
 
 
-    override fun adjustRefernum(researchId: Long, num: Int): Response<ResearchDTO> {
-        log.info("adjustRefernum: researchId = $researchId, num = $num")
+    override fun adjustRefernum(researchId: Long, num: Int, userId: Long): Response<ResearchDTO> {
+        log.info("adjustRefernum: researchId = $researchId, num = $num, userId = $userId")
         var research = try {
             researchRepository.findById(researchId).get()
         } catch (e: NoSuchElementException) {
             return Response.failure("未找到此研究")
         }
+
+
+        val list = research.doneids.split("+")
+        val str = userId.toString()
+
+        if(str in list){
+            return Response.failure("不能重复点赞")
+        }
+
         research.refernum += num
+        research.doneids +=  "+" + str
         research = researchRepository.save(research)
         return Response.success("修改成功", research.toDTO())
     }
