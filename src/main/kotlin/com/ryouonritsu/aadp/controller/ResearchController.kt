@@ -113,6 +113,7 @@ class ResearchController(
 
     @PostMapping("/adjustRefernum")
     @Tag(name = "研究接口")
+    @AuthCheck
     @Operation(
         summary = "调整研究引用数",
     )
